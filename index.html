@@ -26,6 +26,16 @@
   .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
   .progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; text-align: right; }
   main { flex: 1; padding: 0 20px; overflow-y: auto; }
+  .seg { display: flex; gap: 4px; }
+  .seg-btn { font-family: var(--font); font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; -webkit-appearance: none; }
+  .seg-btn.active { background: var(--surface); color: var(--fg); border-color: var(--accent); }
+  .week-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; margin-bottom: 10px; border: 1px solid var(--accent); border-radius: 10px; background: var(--surface); }
+  .week-label { font-size: 13px; font-weight: 700; color: var(--fg); }
+  .week-reset { font-family: var(--font); font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; -webkit-appearance: none; }
+  .ej-timer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ej-timer-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .ej-timer-fill { height: 100%; width: 100%; background: var(--accent); border-radius: 2px; }
+  .ej-timer-num { font-size: 12px; font-weight: 700; color: var(--muted); min-width: 14px; text-align: right; }
   .axis-bar { display: flex; gap: 6px; margin-bottom: 10px; }
   .axis-btn { font-family: var(--font); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; flex: 1; transition: all 0.15s; -webkit-appearance: none; }
   .axis-btn.active { background: var(--surface); color: var(--fg); border-color: var(--accent); }
@@ -158,12 +168,24 @@
         <div class="ej-cat-label">カテゴリを選択</div>
         <div class="axis-bar-wrap" id="ej-axis-bar"></div>
         <div class="mode-bar" id="ej-mode-bar"></div>
+        <div class="week-row" id="ej-week-row" style="display:none">
+          <span class="week-label" id="ej-week-label"></span>
+          <button class="week-reset" onclick="ncResetWeek()">週をリセット</button>
+        </div>
         <div class="toggle-row">
           <span class="toggle-label">🔀 シャッフル</span>
           <div class="tog on" id="ej-tog" onclick="ejToggleShuffle()"><div class="tog-knob"></div></div>
         </div>
+        <div class="toggle-row">
+          <span class="toggle-label">⏱ 自動表示</span>
+          <div class="seg" id="ej-timer-seg">
+            <button class="seg-btn active" data-s="3" onclick="ejSetTimer(3)">3秒</button>
+            <button class="seg-btn" data-s="5" onclick="ejSetTimer(5)">5秒</button>
+            <button class="seg-btn" data-s="0" onclick="ejSetTimer(0)">オフ</button>
+          </div>
+        </div>
         <div class="btn-grid g1" style="margin-bottom:16px">
-          <button class="accent" onclick="ejStart()">▶ スタート（10問）</button>
+          <button class="accent" id="ej-start-btn" onclick="ejStart()">▶ スタート（10問）</button>
         </div>
       </div>
       <!-- EJ Practice -->
@@ -176,6 +198,10 @@
           <div class="ej-ng-text" id="ej-ng-text" style="display:none"></div>
         </div>
         <div id="ej-reveal-area">
+          <div class="ej-timer-row" id="ej-timer-row" style="display:none">
+            <div class="ej-timer-track"><div class="ej-timer-fill" id="ej-timer-fill"></div></div>
+            <div class="ej-timer-num" id="ej-timer-num">3</div>
+          </div>
           <div class="btn-grid g1" style="margin-bottom:10px">
             <button class="accent" onclick="ejReveal()">👁 英語を確認する</button>
           </div>
@@ -1000,74 +1026,183 @@ const ALL_PHRASES = [
 {cat:"ヘッジ",jp:"これは有益かもしれません。",en:"This might be beneficial.",g:"",sub:"I_意見表明の予防線",ng:"We should do this."},
 {cat:"ヘッジ",jp:"少しご相談したかったのですが。",en:"I just wanted to discuss ~",g:"不定詞",sub:"I_意見表明の予防線"},
 {cat:"ヘッジ",jp:"ちょっといいですか？",en:"Do you have a second?",g:"YN疑問",sub:"I_意見表明の予防線"},
-// ========== NativeCamp復習 (8/16-8/23 講師指摘) 2026-08-23追加 ==========
-{cat:"NC復習",jp:"駅の近くのスーパーで買い物をします。",en:"I shop at the supermarket near the station.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"平日は8時間以上働きません。",en:"I don't work more than eight hours a day on weekdays.",g:"比較",sub:"前置詞"},
-{cat:"NC復習",jp:"朝と夕方に電車を使います。",en:"I use the train in the mornings and evenings.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"台風が日本を直撃しました。",en:"The typhoon hit Japan.",g:"過去形",sub:"前置詞"},
-{cat:"NC復習",jp:"電車のほうが車を運転するより安いです。",en:"Taking the train is cheaper than driving.",g:"比較",sub:"前置詞"},
-{cat:"NC復習",jp:"オンラインショッピングのほうが好きです。",en:"I prefer online shopping.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"車より電車のほうが好きです。",en:"I prefer trains to cars.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"余暇には映画を見ます。",en:"I watch movies in my leisure time.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"それは家から一番近い店です。",en:"It's the nearest shop to my house.",g:"比較",sub:"前置詞"},
-{cat:"NC復習",jp:"顧客との接点が、私が最も注力している業務です。",en:"Customer contact is the most important task I focus on.",g:"比較|句動詞",sub:"前置詞"},
-{cat:"NC復習",jp:"彼は私のほうへ歩いてきました。",en:"He walked toward me.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"彼女は歩道を歩いています。",en:"She's walking on the pavement.",g:"進行形",sub:"前置詞"},
-{cat:"NC復習",jp:"空港からタクシーでリゾートまで直接行けます。",en:"You can take a taxi from the airport directly to the resort.",g:"",sub:"前置詞"},
-{cat:"NC復習",jp:"来週までにご連絡します。",en:"I'll get back to you by next week.",g:"助動詞:未来|句動詞",sub:"前置詞"},
-{cat:"NC復習",jp:"そのプロジェクトに取り組んでいます。",en:"I'm working on that project.",g:"進行形|句動詞",sub:"前置詞"},
-{cat:"NC復習",jp:"課題が3つあります。",en:"There are three issues.",g:"There構文",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"課題が1つあります。",en:"There is one issue.",g:"There構文",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"主な環境問題には気候変動が含まれます。",en:"The main environmental issues include climate change.",g:"",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"気候変動は深刻な問題です。",en:"Climate change is a serious problem.",g:"",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"天気が悪ければ行きません。",en:"If the weather is bad, I won't go.",g:"助動詞:未来|条件|過去形",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"通勤には電車を使います。",en:"I take the train to work.",g:"不定詞",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"近くにコンビニが数軒あります。",en:"There are several convenience stores nearby.",g:"There構文",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"契約条件を確認させてください。",en:"Let me check the terms of the contract.",g:"命令依頼|使役",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"女性が二人待っています。",en:"Two women are waiting.",g:"進行形",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"女性が一人待っています。",en:"One woman is waiting.",g:"進行形",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"犬が二匹います。一匹は黒で、もう一匹は白です。",en:"There are two dogs. One is black and the other is white.",g:"There構文",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"それらは家から一番近い店です。",en:"They are the nearest shops to my house.",g:"比較",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"それは市内で最も有名な活動のひとつです。",en:"It is one of the most famous activities in my city.",g:"比較",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"近くで最も有名なスターバックスの一店です。",en:"It's one of the most famous Starbucks cafes nearby.",g:"比較",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"私が一番好きなスポーツはサッカーです。",en:"Football is my favourite sport.",g:"",sub:"単複・冠詞"},
-{cat:"NC復習",jp:"15分かかります。",en:"It takes fifteen minutes.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"50分かかります。",en:"It takes fifty minutes.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"会議室は17室あります。",en:"There are seventeen meeting rooms.",g:"There構文",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"会議室は70室あります。",en:"There are seventy meeting rooms.",g:"There構文",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"契約は14件です。",en:"We have fourteen contracts.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"契約は40件です。",en:"We have forty contracts.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"売上は13%伸びました。",en:"Sales grew by thirteen percent.",g:"過去形",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"売上は30%伸びました。",en:"Sales grew by thirty percent.",g:"過去形",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"締め切りは18日です。",en:"The deadline is the eighteenth.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"80名が参加しました。",en:"Eighty people attended.",g:"",sub:"数字（-teen/-ty）"},
-{cat:"NC復習",jp:"日常の買い物では、手頃な価格の店を選びます。",en:"For everyday shopping, I usually choose a store with affordable prices.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"こうした品は継続的に買う必要があるので、そのほうがいいと思います。",en:"I think it's better because I have to buy these items continuously.",g:"助動詞:義務|不定詞|比較|接続詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"毎日食料品を買いに行くので、必要なものを買うのに15分ほどかかります。",en:"I go grocery shopping every day, so it takes about fifteen minutes to buy what I need.",g:"不定詞|接続詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"最近はネットで買いますが、以前は必ず実店舗に行っていました。",en:"These days I shop online, but I used to always go to the physical shop.",g:"接続詞|過去形",sub:"講師模範文"},
-{cat:"NC復習",jp:"個人的には、便利なのでオンラインショッピングのほうが好きです。",en:"I personally prefer online shopping because it's more convenient.",g:"比較|接続詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"私が最もよく使う交通手段は電車です。",en:"The type of public transportation I use the most is the train.",g:"比較",sub:"講師模範文"},
-{cat:"NC復習",jp:"これが毎日の通勤方法です。",en:"This is how I get to work every day.",g:"不定詞|句動詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"朝と夕方に公共交通機関を使います。",en:"I use public transportation in the mornings and evenings.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"車で通勤すると、私の場合はもっと費用がかかります。",en:"Driving to work would be more expensive for me.",g:"不定詞|比較",sub:"講師模範文"},
-{cat:"NC復習",jp:"余暇にはいつも映画を見ます。",en:"I always watch movies in my leisure time.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"余暇の活動はとてもリラックスできます。",en:"Leisure activities are very relaxing for me.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"天気が悪かったり忙しかったりすると、旅行には行きません。",en:"If the weather is bad or I'm busy, I wouldn't go on a leisure trip.",g:"条件|句動詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"スケートボードは市内で最も人気のある活動のひとつです。",en:"Skateboarding is one of the most famous activities in my city.",g:"比較",sub:"講師模範文"},
-{cat:"NC復習",jp:"近くの有名なスターバックスで楽しい時間を過ごせます。",en:"You can have a great time at one of the most famous Starbucks cafes nearby.",g:"比較",sub:"講師模範文"},
-{cat:"NC復習",jp:"毎日スポーツを見ます。",en:"I watch sports every day.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"週に1、2回スポーツを見ます。",en:"I watch sports once or twice a week.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"たまにスポーツを見ます。",en:"I sometimes watch sports.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"めったにスポーツは見ません。",en:"I rarely watch sports.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"週に2時間ほどスポーツを見ます。",en:"I typically spend about two hours a week watching sports.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"だいたい1日7時間くらい働いています。",en:"I usually work about seven hours a day.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"勤務中の休憩は平均して1時間ほどです。",en:"I usually spend about an hour on breaks during my workday.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"昼食をとって数分休むためです。",en:"That's to have lunch and relax for a few minutes.",g:"不定詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"営業職なので、売上を上げる責任があります。",en:"I'm a salesperson, so I'm responsible for generating revenue.",g:"動名詞|接続詞",sub:"講師模範文"},
-{cat:"NC復習",jp:"今日が最後に買い物に行った日です。弁当を買いました。",en:"Today was the last time I went shopping. I bought a lunch box.",g:"過去形",sub:"講師模範文"},
-{cat:"NC復習",jp:"買い物に行くときは、たいてい日用品を買います。",en:"When I go shopping, I usually buy everyday groceries.",g:"WH疑問",sub:"講師模範文"},
-{cat:"NC復習",jp:"いつも価格を意識しています。",en:"I always consider the price.",g:"",sub:"講師模範文"},
-{cat:"NC復習",jp:"家から一番近いので、手頃な価格の店をよく利用します。",en:"I usually visit affordable stores because they are the nearest shops to my house.",g:"比較|接続詞",sub:"講師模範文"},
+// ========== NativeCamp特訓 (8/16-9/17 32セッション) 2026-09-18統合 ==========
+{cat:"NC",jp:"15分かかります。",en:"It takes fifteen minutes.",g:"",sub:"数字",pg:"n1"},
+{cat:"NC",jp:"50分かかります。",en:"It takes fifty minutes.",g:"",sub:"数字",pg:"n1"},
+{cat:"NC",jp:"参加費は18ドルです。",en:"The registration fee is eighteen dollars.",g:"",sub:"数字",pg:"n2"},
+{cat:"NC",jp:"参加費は80ドルです。",en:"The registration fee is eighty dollars.",g:"",sub:"数字",pg:"n2"},
+{cat:"NC",jp:"会議室は17室あります。",en:"There are seventeen meeting rooms.",g:"There構文",sub:"数字",pg:"n3"},
+{cat:"NC",jp:"会議室は70室あります。",en:"There are seventy meeting rooms.",g:"There構文",sub:"数字",pg:"n3"},
+{cat:"NC",jp:"契約は14件です。",en:"We have fourteen contracts.",g:"",sub:"数字",pg:"n4"},
+{cat:"NC",jp:"契約は40件です。",en:"We have forty contracts.",g:"",sub:"数字",pg:"n4"},
+{cat:"NC",jp:"売上は13%伸びました。",en:"Sales grew by thirteen percent.",g:"過去形",sub:"数字",pg:"n5"},
+{cat:"NC",jp:"売上は30%伸びました。",en:"Sales grew by thirty percent.",g:"過去形",sub:"数字",pg:"n5"},
+{cat:"NC",jp:"午前6時半に始まります。",en:"It starts at six thirty a.m.",g:"",sub:"数字",pg:"n6"},
+{cat:"NC",jp:"午後6時半に始まります。",en:"It starts at six thirty p.m.",g:"",sub:"数字",pg:"n6"},
+{cat:"NC",jp:"課題が3つあります。",en:"There are three issues.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"課題が1つあります。",en:"There is one issue.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"主な環境問題には気候変動が含まれます。",en:"The main environmental issues include climate change.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"気候変動は深刻な問題です。",en:"Climate change is a serious problem.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"天気が悪ければ行きません。",en:"If the weather is bad, I won't go.",g:"助動詞:未来|条件|過去形",sub:"単複・冠詞"},
+{cat:"NC",jp:"通勤には電車を使います。",en:"I take the train to work.",g:"不定詞",sub:"単複・冠詞"},
+{cat:"NC",jp:"近くにコンビニが数軒あります。",en:"There are several convenience stores nearby.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"契約条件を確認させてください。",en:"Let me check the terms of the contract.",g:"命令依頼|使役",sub:"単複・冠詞"},
+{cat:"NC",jp:"女性が二人待っています。",en:"Two women are waiting.",g:"進行形",sub:"単複・冠詞"},
+{cat:"NC",jp:"女性が一人待っています。",en:"One woman is waiting.",g:"進行形",sub:"単複・冠詞"},
+{cat:"NC",jp:"犬が二匹います。一匹は黒で、もう一匹は白です。",en:"There are two dogs. One is black and the other is white.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"それらは家から一番近い店です。",en:"They are the nearest shops to my house.",g:"比較",sub:"単複・冠詞"},
+{cat:"NC",jp:"それは市内で最も有名な活動のひとつです。",en:"It is one of the most famous activities in my city.",g:"比較",sub:"単複・冠詞"},
+{cat:"NC",jp:"近くで最も有名なスターバックスの一店です。",en:"It's one of the most famous Starbucks cafes nearby.",g:"比較",sub:"単複・冠詞"},
+{cat:"NC",jp:"私が一番好きなスポーツはサッカーです。",en:"Football is my favourite sport.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"この地域にはいい店がいくつかあります。",en:"There are some good restaurants in my area.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"それらはそんなに高くありません。",en:"They are not very expensive.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"先週の金曜日にそこへ行きました。",en:"We went there last Friday.",g:"過去形",sub:"単複・冠詞"},
+{cat:"NC",jp:"最後に行ったのは先週の金曜日です。",en:"The last time I went was last Friday.",g:"過去形",sub:"単複・冠詞"},
+{cat:"NC",jp:"友人たちはよく本の話をします。",en:"My friends often talk about books.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"冷蔵庫と洗濯機を毎日使います。",en:"I use the refrigerator and the washing machine every day.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"家電はどれも品質が良いです。",en:"My household appliances are all good quality.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"私の街には大きなスタジアムがあります。",en:"There is a big stadium in my city.",g:"There構文",sub:"単複・冠詞"},
+{cat:"NC",jp:"手頃な価格の店をいくつか知っています。",en:"I know a few affordable restaurants.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"グループレッスンには参加しません。",en:"I don't participate in group fitness classes.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"仕事が忙しいので、その役割は引き受けられません。",en:"I'm really busy with my job, so I cannot take the role.",g:"接続詞",sub:"複文の型"},
+{cat:"NC",jp:"調理スペースが狭いので、置き場所を確保できるように献立を計画します。",en:"Because my cooking space is small, I plan my meals carefully so that I have enough room.",g:"接続詞",sub:"複文の型"},
+{cat:"NC",jp:"定期的に通えるように、近い場所を選びます。",en:"I choose a place nearby so that I can go there regularly.",g:"接続詞",sub:"複文の型"},
+{cat:"NC",jp:"在宅勤務は通勤がない点は利点ですが、同僚と話せないのは難点です。",en:"Although working from home is an advantage because I don't have to travel, it makes it harder to talk with my colleagues.",g:"助動詞:義務|不定詞|接続詞",sub:"複文の型"},
+{cat:"NC",jp:"特定の分野に絞るべきだと思います。手を広げすぎると対応しきれないからです。",en:"I think we should focus on specific areas, because if we take on too much, we cannot handle it properly.",g:"助動詞:義務|条件|接続詞|句動詞",sub:"複文の型"},
+{cat:"NC",jp:"著者に直接会えるなら、もっと本を読むと思います。",en:"I would read more books if I could meet the authors in person.",g:"比較|条件",sub:"複文の型"},
+{cat:"NC",jp:"時間があれば行きます。",en:"I would go if I had time.",g:"条件",sub:"複文の型"},
+{cat:"NC",jp:"オンラインのほうが時間を節約できるので、実店舗にはあまり行きません。",en:"I rarely go to physical stores because shopping online saves so much time.",g:"接続詞",sub:"複文の型"},
+{cat:"NC",jp:"飛行機での移動が好きです。速くて便利だからです。",en:"I love travelling by plane because it's faster and more convenient.",g:"比較|接続詞",sub:"複文の型"},
+{cat:"NC",jp:"資料をご覧いただければ、状況がわかると思います。",en:"If you look at the document, you'll see the situation.",g:"助動詞:未来|条件",sub:"複文の型"},
+{cat:"NC",jp:"予算内に収まるように仕様を調整しました。",en:"We adjusted the specification so that it fits the budget.",g:"接続詞",sub:"複文の型"},
+{cat:"NC",jp:"駅の近くのスーパーで買い物をします。",en:"I shop at the supermarket near the station.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"朝と夕方に電車を使います。",en:"I use the train in the mornings and evenings.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"台風が日本を直撃しました。",en:"The typhoon hit Japan.",g:"過去形",sub:"前置詞"},
+{cat:"NC",jp:"電車のほうが車を運転するより安いです。",en:"Taking the train is cheaper than driving.",g:"比較",sub:"前置詞"},
+{cat:"NC",jp:"オンラインショッピングのほうが好きです。",en:"I prefer online shopping.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"車より電車のほうが好きです。",en:"I prefer trains to cars.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"それは家から一番近い店です。",en:"It's the nearest shop to my house.",g:"比較",sub:"前置詞"},
+{cat:"NC",jp:"顧客との接点が、私が最も注力している業務です。",en:"Customer contact is the most important task I focus on.",g:"比較|句動詞",sub:"前置詞"},
+{cat:"NC",jp:"彼は私のほうへ歩いてきました。",en:"He walked toward me.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"彼女は歩道を歩いています。",en:"She's walking on the pavement.",g:"進行形",sub:"前置詞"},
+{cat:"NC",jp:"空港からタクシーでリゾートまで直接行けます。",en:"You can take a taxi from the airport directly to the resort.",g:"",sub:"前置詞"},
+{cat:"NC",jp:"来週までにご連絡します。",en:"I'll get back to you by next week.",g:"助動詞:未来|句動詞",sub:"前置詞"},
+{cat:"NC",jp:"そのプロジェクトに取り組んでいます。",en:"I'm working on that project.",g:"進行形|句動詞",sub:"前置詞"},
+{cat:"NC",jp:"基調講演はデジタルマーケティングの未来についてです。",en:"The keynote speech is about the future of digital marketing.",g:"",sub:"発音ペア",pg:"p1"},
+{cat:"NC",jp:"この記事の特集はデジタルマーケティングです。",en:"The feature of this article is digital marketing.",g:"",sub:"発音ペア",pg:"p1"},
+{cat:"NC",jp:"閉会の挨拶は午後3時からです。",en:"The closing remarks will start at 3 p.m.",g:"助動詞:未来",sub:"発音ペア",pg:"p2"},
+{cat:"NC",jp:"横断歩道は駅の前にあります。",en:"The crossing is in front of the station.",g:"",sub:"発音ペア",pg:"p2"},
+{cat:"NC",jp:"平日は1日8時間以上は働きません。",en:"I don't work more than eight hours a day on weekdays.",g:"比較",sub:"発音ペア",pg:"p3"},
+{cat:"NC",jp:"毎朝、駅まで歩いて行きます。",en:"I walk to the station every morning.",g:"",sub:"発音ペア",pg:"p3"},
+{cat:"NC",jp:"余暇には映画を見ます。",en:"I watch movies in my leisure time.",g:"",sub:"発音ペア"},
+{cat:"NC",jp:"この製品は信頼できます。",en:"This product is reliable.",g:"",sub:"発音ペア"},
+{cat:"NC",jp:"研修は午前10時半に始まり、1時間半続きます。",en:"The workshop starts at 10:30 a.m., and it runs for one hour and thirty minutes.",g:"",sub:"情報応答の型"},
+{cat:"NC",jp:"午後2時から5時までです。",en:"It runs from 2 to 5 p.m.",g:"",sub:"情報応答の型"},
+{cat:"NC",jp:"午前11時半から12時までです。",en:"It runs from 11:30 a.m. to 12 p.m.",g:"",sub:"情報応答の型"},
+{cat:"NC",jp:"登録は無料です。ただし、事前登録が必要です。",en:"Registration is free. However, pre-registration is required.",g:"受動態|接続詞",sub:"情報応答の型"},
+{cat:"NC",jp:"1人120ドルなので、2人で240ドルです。",en:"It's $120 per person, so $240 for two people.",g:"接続詞",sub:"情報応答の型"},
+{cat:"NC",jp:"午後2時までに3つの活動があります。",en:"We have three activities until 2 p.m.",g:"",sub:"情報応答の型"},
+{cat:"NC",jp:"1つ目は開会式です。",en:"The first activity is the opening ceremony.",g:"比較",sub:"情報応答の型"},
+{cat:"NC",jp:"2つ目はワークショップです。",en:"The second activity is the workshop.",g:"比較",sub:"情報応答の型"},
+{cat:"NC",jp:"そのあと1時間の休憩があります。",en:"After that, there is an hour-long break.",g:"There構文",sub:"情報応答の型"},
+{cat:"NC",jp:"休憩のあとはグループディスカッションです。",en:"After the break, there are group discussions.",g:"There構文",sub:"情報応答の型"},
+{cat:"NC",jp:"いいえ、12月にも2つ予定されています。",en:"No, there are two more scheduled for December.",g:"比較|There構文",sub:"情報応答の型"},
+{cat:"NC",jp:"そのあと特別発表に移ります。",en:"After that, we will proceed with the special announcement.",g:"助動詞:未来|句動詞",sub:"情報応答の型"},
+{cat:"NC",jp:"私はいつも満足しています。",en:"I am always satisfied.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"今の家電に満足しています。",en:"I am satisfied with my current appliances.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"それらは手頃な価格だと思います。",en:"I think they are affordable.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"それは手頃な価格だと思います。",en:"I think it is affordable.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"妻はアメリカの大学を卒業しました。",en:"My wife graduated from a university in the US.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"私は営業担当です。",en:"I am a salesperson.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"その店は家から一番近いです。",en:"That shop is the nearest to my house.",g:"比較",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"それらの店は家から近いです。",en:"Those shops are close to my house.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"今日は疲れています。",en:"I am tired today.",g:"",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"彼女は階段を降りています。",en:"She is walking down the stairs.",g:"進行形",sub:"be動詞・主述の一致"},
+{cat:"NC",jp:"先週の金曜日にレストランに行きました。",en:"Last Friday we visited a restaurant.",g:"",sub:"時制"},
+{cat:"NC",jp:"最近は新しい家電を買っていません。",en:"Recently I haven't bought a new appliance.",g:"過去形",sub:"時制"},
+{cat:"NC",jp:"昨日は何も買いませんでした。",en:"I didn't buy anything yesterday.",g:"過去形",sub:"時制"},
+{cat:"NC",jp:"以前より頻繁に使っています。",en:"I use them more often now than I did in the past.",g:"比較|過去形",sub:"時制"},
+{cat:"NC",jp:"以前ほど頻繁には旅行しません。",en:"I don't travel as frequently as I used to.",g:"比較|過去形",sub:"時制"},
+{cat:"NC",jp:"前は必ず実店舗に行っていました。",en:"I used to always go to a physical store.",g:"過去形",sub:"時制"},
+{cat:"NC",jp:"新しい料理を試したいときはアプリを使います。",en:"When I want to try a new dish, I use an app.",g:"WH疑問",sub:"時制"},
+{cat:"NC",jp:"もう何年もサッカーを見ています。",en:"I have watched football for many years.",g:"",sub:"時制"},
+{cat:"NC",jp:"まだ決めていません。",en:"I haven't decided yet.",g:"現在完了",sub:"時制"},
+{cat:"NC",jp:"その件はすでに担当者に伝えました。",en:"I have already told the person in charge about it.",g:"過去形",sub:"時制"},
+{cat:"NC",jp:"正直に言うと、公園にはあまり行きません。",en:"To be honest, I don't often go to parks.",g:"",sub:"否定で答える型"},
+{cat:"NC",jp:"実は、社会活動には参加していません。",en:"Actually, I don't participate in social activities.",g:"",sub:"否定で答える型"},
+{cat:"NC",jp:"最近は買っていません。",en:"I haven't bought one recently.",g:"過去形",sub:"否定で答える型"},
+{cat:"NC",jp:"詳しくはありませんが、こう思います。",en:"I'm not familiar with it, but I think so.",g:"接続詞",sub:"否定で答える型"},
+{cat:"NC",jp:"代わりにショッピングモールに行きます。",en:"I usually go to a shopping mall instead.",g:"",sub:"否定で答える型"},
+{cat:"NC",jp:"あまり頻繁ではありません。月に1、2回です。",en:"Not very often. Maybe once or twice a month.",g:"",sub:"否定で答える型"},
+{cat:"NC",jp:"その経験はありませんが、想像はできます。",en:"I haven't experienced that, but I can imagine it.",g:"接続詞",sub:"否定で答える型"},
+{cat:"NC",jp:"ペットは飼っていません。マンションで禁止されているからです。",en:"I don't have any pets because my building doesn't allow them.",g:"接続詞",sub:"否定で答える型"},
+{cat:"NC",jp:"日常の買い物では、手頃な価格の店を選びます。",en:"For everyday shopping, I usually choose a store with affordable prices.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"こうした品は継続的に買う必要があるので、そのほうがいいと思います。",en:"I think it's better because I have to buy these items continuously.",g:"助動詞:義務|不定詞|比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"毎日食料品を買いに行くので、必要なものを買うのに15分ほどかかります。",en:"I go grocery shopping every day, so it takes about fifteen minutes to buy what I need.",g:"不定詞|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"最近はネットで買いますが、以前は必ず実店舗に行っていました。",en:"These days I shop online, but I used to always go to the physical shop.",g:"接続詞|過去形",sub:"講師模範文"},
+{cat:"NC",jp:"個人的には、便利なのでオンラインショッピングのほうが好きです。",en:"I personally prefer online shopping because it's more convenient.",g:"比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"私が最もよく使う交通手段は電車です。",en:"The type of public transportation I use the most is the train.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"これが毎日の通勤方法です。",en:"This is how I get to work every day.",g:"不定詞|句動詞",sub:"講師模範文"},
+{cat:"NC",jp:"朝と夕方に公共交通機関を使います。",en:"I use public transportation in the mornings and evenings.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"車で通勤すると、私の場合はもっと費用がかかります。",en:"Driving to work would be more expensive for me.",g:"不定詞|比較",sub:"講師模範文"},
+{cat:"NC",jp:"余暇にはいつも映画を見ます。",en:"I always watch movies in my leisure time.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"余暇の活動はとてもリラックスできます。",en:"Leisure activities are very relaxing for me.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"天気が悪かったり忙しかったりすると、旅行には行きません。",en:"If the weather is bad or I'm busy, I wouldn't go on a leisure trip.",g:"条件|句動詞",sub:"講師模範文"},
+{cat:"NC",jp:"スケートボードは市内で最も人気のある活動のひとつです。",en:"Skateboarding is one of the most famous activities in my city.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"近くの有名なスターバックスで楽しい時間を過ごせます。",en:"You can have a great time at one of the most famous Starbucks cafes nearby.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"毎日スポーツを見ます。",en:"I watch sports every day.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"週に1、2回スポーツを見ます。",en:"I watch sports once or twice a week.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"たまにスポーツを見ます。",en:"I sometimes watch sports.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"めったにスポーツは見ません。",en:"I rarely watch sports.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"週に2時間ほどスポーツを見ます。",en:"I typically spend about two hours a week watching sports.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"だいたい1日7時間くらい働いています。",en:"I usually work about seven hours a day.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"勤務中の休憩は平均して1時間ほどです。",en:"I usually spend about an hour on breaks during my workday.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"昼食をとって数分休むためです。",en:"That's to have lunch and relax for a few minutes.",g:"不定詞",sub:"講師模範文"},
+{cat:"NC",jp:"営業職なので、売上を上げる責任があります。",en:"I'm a salesperson, so I'm responsible for generating revenue.",g:"動名詞|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"今日が最後に買い物に行った日です。弁当を買いました。",en:"Today was the last time I went shopping. I bought a lunch box.",g:"過去形",sub:"講師模範文"},
+{cat:"NC",jp:"買い物に行くときは、たいてい日用品を買います。",en:"When I go shopping, I usually buy everyday groceries.",g:"WH疑問",sub:"講師模範文"},
+{cat:"NC",jp:"いつも価格を意識しています。",en:"I always consider the price.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"家から一番近いので、手頃な価格の店をよく利用します。",en:"I usually visit affordable stores because they are the nearest shops to my house.",g:"比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"趣味はサッカーで、試合を見て過ごしています。もう何年もそうしています。",en:"My hobby is football, and I spend my time watching football games. I've done this for many years.",g:"現在完了",sub:"講師模範文"},
+{cat:"NC",jp:"体を動かす趣味より、リラックスできる趣味が好きです。テレビでサッカーを見るような。",en:"I prefer hobbies that aren't physically active but are more relaxing, like watching football on TV.",g:"比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"一番大事なのは人とのつながりだと思います。誰かと一緒に趣味を楽しみたいので。",en:"I think the most important thing is social opportunity because I want to connect with someone and enjoy my hobby with them.",g:"比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"週に2、3回ジムに行きます。",en:"I usually go to the fitness center two or three times a week.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"グループレッスンには参加しません。一人で運動するほうが好きなので。",en:"I don't usually participate in group fitness classes because I prefer to exercise on my own.",g:"接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"通いやすい場所を選ぶことも大事だと思います。",en:"I think it's also important to choose a fitness center in a convenient location.",g:"不定詞",sub:"講師模範文"},
+{cat:"NC",jp:"年に1、2回、妻と旅行します。主に休暇です。",en:"I usually travel once or twice a year with my wife, mainly for vacation.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"日本人のほとんどは家で和食を作ります。",en:"Most people in Japan cook Japanese food at home.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"新しい料理を作りたいときは、いつもレシピアプリを使います。",en:"If I want to try cooking a new dish, I always use recipe apps on the internet.",g:"条件",sub:"講師模範文"},
+{cat:"NC",jp:"友人はよく私が読んだ本の話をしてくれて、好きな部分を共有します。",en:"My friends often talk to me about the books I read, and we share our favorite parts.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"オンラインのほうが時間を節約できるので、実店舗にはもうあまり行きません。",en:"I rarely go to physical bookstores anymore because online shopping saves so much time.",g:"接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"道具や資材を提供すべきだと思います。ボランティア活動に役立つと思うからです。",en:"I think they should provide tools and materials, because I believe it is helpful for volunteer activities.",g:"助動詞:義務|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"飛行機での移動が大好きです。速くて便利です。",en:"I love travelling by airplane. It's faster and more convenient.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"旅がより楽しくなります。",en:"It makes trips more enjoyable.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"キャリアアップの機会が、職場を選ぶうえで最も重要です。",en:"Opportunities for career advancement are the most important thing to me when choosing a workplace.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"キャリア目標に集中して、昇進を通じて収入を増やしたいからです。",en:"I want to focus on my career goals and get more income through promotion.",g:"比較|句動詞",sub:"講師模範文"},
+{cat:"NC",jp:"アクションコメディ映画が好きで、よく見ます。",en:"I like action comedy movies, and I often watch them.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"月に1、2回映画館に行きます。映画館で見るほうが好きです。",en:"I go to the movies once or twice a month, and I prefer watching movies in theaters.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"週に1回外食します。最後に行ったのは先週の金曜日です。",en:"I go out to eat once a week, and the last time I visited a restaurant was last Friday.",g:"過去形",sub:"講師模範文"},
+{cat:"NC",jp:"この地域にはいい店があります。ただ、そんなに高くはなく、手頃だと思います。",en:"I can find good restaurants in my area. However, they are not very expensive, and I think they are affordable.",g:"接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"最近この地域で回転寿司のイベントがあり、家族連れで混んでいました。",en:"Recently, there was a kaiten-sushi festival in my area, so many families came to the restaurant. It was always crowded.",g:"接続詞|過去形|There構文",sub:"講師模範文"},
+{cat:"NC",jp:"週に3、4時間ほど家電を使います。以前より使う頻度が増えました。",en:"I spend about three to four hours a week using household appliances. I use them more often now than I did in the past.",g:"比較|過去形",sub:"講師模範文"},
+{cat:"NC",jp:"最近は新しい家電を買っていないので、ブランドを選ぶ必要はありませんでした。",en:"Recently, I haven't bought a new household appliance, so I didn't have to choose from many brands.",g:"助動詞:義務|不定詞|接続詞|過去形",sub:"講師模範文"},
+{cat:"NC",jp:"今の家電に満足しています。品質が良く、信頼できるからです。",en:"I am satisfied with my current household appliances because I think they are good quality and reliable.",g:"接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"子どもが運動の習慣をつけるのは大事だと思いますが、強制する必要はありません。",en:"I think it's important for children to develop a habit of exercising, but we don't have to force them.",g:"助動詞:義務|不定詞|動名詞|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"最近は休暇を取っていません。",en:"I haven't been on vacation recently.",g:"現在完了",sub:"講師模範文"},
+{cat:"NC",jp:"海外に行くほうがいいと思います。何か面白くて刺激的なものを得たいので。",en:"I think it's better to travel abroad because I want to get something interesting and stimulating.",g:"不定詞|比較|接続詞",sub:"講師模範文"},
+{cat:"NC",jp:"予算を気にしなくていいなら、家族でクルーズを検討します。",en:"If I weren't worried about the budget, I would consider going on a cruise with my family.",g:"動名詞|条件",sub:"講師模範文"},
+{cat:"NC",jp:"はい、あります。参加費は1人80ドルですが、雑誌の購読者なら65ドルです。",en:"Yes, there is. The registration fee is $80 per person, but if you are a magazine subscriber, you'll pay $65.",g:"助動詞:未来|条件|接続詞|There構文",sub:"講師模範文"},
+{cat:"NC",jp:"セミナーは3つあります。1つ目は火曜日の新型スマートフォンの発表とデモについてです。",en:"We have three seminars. The first one is about the launch and demo of the new smartphone on Tuesday.",g:"比較",sub:"講師模範文"},
+{cat:"NC",jp:"はい、ブランチは料金に含まれます。ただし、プレミアムブランチには15ドルの追加料金がかかります。",en:"Yes, brunch is included in the price. However, there is an extra $15 charge for premium brunch.",g:"受動態|接続詞|There構文",sub:"講師模範文"},
+{cat:"NC",jp:"はい、午前11時半から12時まで、事業拡大計画についての特別発表があります。",en:"Yes, there will be a special announcement from 11:30 a.m. to 12 p.m. on the company expansion plans.",g:"助動詞:未来",sub:"講師模範文"},
+{cat:"NC",jp:"Jennifer Adamsが午前10時から11時まで、2024年のイノベーションについて講演します。",en:"Jennifer Adams will be conducting the overview on the 2024 innovations from 10 to 11 a.m.",g:"助動詞:未来",sub:"講師模範文"},
+{cat:"NC",jp:"11月10日のテーマは「プロのための交渉戦略」で、David Kimが担当します。",en:"The topic on November 10 is Negotiation Strategies for Professionals, presented by David Kim.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"Sarah Leeは2つのワークショップを担当します。1つ目は11月3日で、効果的なビジネスコミュニケーションについてです。",en:"Sarah Lee is covering two workshops. The first one is on November 3, and it's about Effective Business Communication.",g:"進行形|比較",sub:"講師模範文"},
+{cat:"NC",jp:"Robert Hayes氏の講演は午後1時に始まります。",en:"Mr. Robert Hayes's speech will start at 1 p.m.",g:"助動詞:未来",sub:"講師模範文"},
+{cat:"NC",jp:"Robert Hayes氏は午後1時に講演します。",en:"Mr. Robert Hayes will have his speech at 1 p.m.",g:"助動詞:未来",sub:"講師模範文"},
+{cat:"NC",jp:"いいえ、違います。基調講演はデジタルマーケティングの未来についてです。",en:"No, it's not. The keynote speech is about the future of digital marketing.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"そうではありません。基調講演のテーマはデジタルマーケティングの未来です。",en:"That's not true. The subject of the keynote speech is the future of digital marketing.",g:"",sub:"講師模範文"},
+{cat:"NC",jp:"閉会の挨拶と交流会は午後3時から続きます。",en:"The closing remarks and networking opportunity will follow at 3 p.m.",g:"助動詞:未来",sub:"講師模範文"},
 ];
 
 const CATEGORIES = [
@@ -1086,7 +1221,6 @@ const CATEGORIES = [
   {id:"vocab",  label:"📖 語彙・動詞",  filter:["語彙","動詞","形容詞","表現","論理"]},
   {id:"intro",  label:"👤 自己紹介",    filter:["自己紹介","文化","定義"]},
   {id:"hedge",  label:"🛡 ヘッジ・レジスター", filter:["ヘッジ"]},
-  {id:"ncrev",  label:"🔧 NC復習", filter:["NC復習"]},
 ];
 
 const GRAMMAR_CATEGORIES = [
@@ -1111,9 +1245,33 @@ const GRAMMAR_CATEGORIES = [
   {id:"g_perf", label:"✅ 現在完了",     g:["現在完了"]},
 ];
 
-// 軸切替: 'scene'（場面別）/ 'grammar'（文法別）
+const NC_CATEGORIES = [
+  {id:"nc_week",  label:"📅 今週のセット", sub:null},
+  {id:"nc_num",   label:"🔢 数字",          sub:["数字"]},
+  {id:"nc_snt",   label:"🔤 単複・冠詞",    sub:["単複・冠詞"]},
+  {id:"nc_cplx",  label:"🧱 複文の型",      sub:["複文の型"]},
+  {id:"nc_prep",  label:"📍 前置詞",        sub:["前置詞"]},
+  {id:"nc_pron",  label:"🗣 発音ペア",      sub:["発音ペア"]},
+  {id:"nc_info",  label:"📋 情報応答の型",  sub:["情報応答の型"]},
+  {id:"nc_be",    label:"⚙️ be動詞・主述",  sub:["be動詞・主述の一致"]},
+  {id:"nc_tense", label:"⏱ 時制",          sub:["時制"]},
+  {id:"nc_neg",   label:"🚫 否定で答える型",sub:["否定で答える型"]},
+  {id:"nc_model", label:"📝 講師模範文",    sub:["講師模範文"]},
+];
+// 週ローテーション（指示書 2026-09-18 §4-③）
+const NC_ROTATION = ["数字","単複・冠詞","複文の型","前置詞"];
+const NC_MIX_SIZE = 20;
+
+// 軸切替: 'scene'（場面別）/ 'grammar'（文法別）/ 'nc'（NC特訓・瞬間英作文のみ）
+// シャドウ・音声版は scene/grammar のみ。EJ は独立した軸を持つ。
 let axisMode='scene';
-function activeCatList(){return axisMode==='grammar'?GRAMMAR_CATEGORIES:CATEGORIES;}
+let ejAxis='scene';
+function catListFor(a){
+  if(a==='nc')return NC_CATEGORIES;
+  if(a==='grammar')return GRAMMAR_CATEGORIES;
+  return CATEGORIES;
+}
+function activeCatList(){return catListFor(axisMode);}
 
 const SET_SIZE=10;
 let currentSet=[],idx=0,setNum=1,scores=[];
@@ -1150,21 +1308,96 @@ function dedupe(arr){
   const seen=new Set();
   return arr.filter(p=>{if(seen.has(p.en))return false;seen.add(p.en);return true;});
 }
+// NCデータは瞬間英作文モード専用（指示書 §3）。場面別・文法別の各プールからは除外する。
+function notNC(p){return p.cat!=='NC';}
 function getPool(catId){
+  const ncat=NC_CATEGORIES.find(c=>c.id===catId);
+  if(ncat){
+    if(!ncat.sub) return ncWeeklySet();
+    return dedupe(ALL_PHRASES.filter(p=>p.cat==='NC'&&ncat.sub.includes(p.sub)));
+  }
   const gcat=GRAMMAR_CATEGORIES.find(c=>c.id===catId);
   if(gcat){
-    if(!gcat.g) return dedupe(ALL_PHRASES.filter(p=>p.g&&p.g.length>0));
-    return dedupe(ALL_PHRASES.filter(p=>p.g&&gcat.g.some(t=>p.g.split('|').includes(t))));
+    if(!gcat.g) return dedupe(ALL_PHRASES.filter(p=>notNC(p)&&p.g&&p.g.length>0));
+    return dedupe(ALL_PHRASES.filter(p=>notNC(p)&&p.g&&gcat.g.some(t=>p.g.split('|').includes(t))));
   }
   const cat=CATEGORIES.find(c=>c.id===catId);
-  if(!cat||!cat.filter) return dedupe(ALL_PHRASES);
+  if(!cat||!cat.filter) return dedupe(ALL_PHRASES.filter(notNC));
   return dedupe(ALL_PHRASES.filter(p=>cat.filter.includes(p.cat)));
 }
-function buildAxisBar(current,fnName){
-  return '<div class="axis-bar">'+
-    `<button class="axis-btn${axisMode==='scene'?' active':''}" onclick="${fnName}('scene')">🏢 場面別</button>`+
-    `<button class="axis-btn${axisMode==='grammar'?' active':''}" onclick="${fnName}('grammar')">📐 文法別</button>`+
-  '</div>';
+
+// ---------- 週次固定セット ----------
+// 指示書 §4-②：1週間おなじセットを回す。毎日ランダムに全体から出さない。
+function ncStartDate(){
+  let s=null;
+  try{s=localStorage.getItem('nc_start');}catch(e){}
+  if(!s){
+    s=new Date().toISOString().slice(0,10);
+    try{localStorage.setItem('nc_start',s);}catch(e){}
+  }
+  return s;
+}
+function ncWeekNo(){
+  const st=new Date(ncStartDate()+'T00:00:00');
+  const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const days=Math.floor((today-st)/86400000);
+  return Math.max(1,Math.floor(days/7)+1);
+}
+function ncWeekLabel(){
+  const w=ncWeekNo();
+  return w<=NC_ROTATION.length?`第${w}週：${NC_ROTATION[w-1]}`:`第${w}週：4カテゴリ混合`;
+}
+function ncResetWeek(){
+  try{localStorage.setItem('nc_start',new Date().toISOString().slice(0,10));}catch(e){}
+  buildEjModeBar();
+}
+// 週番号を種にした決定的シャッフル（同じ週なら毎日おなじ並び）
+function seededShuffle(arr,seed){
+  const a=[...arr];let s=seed*9301+49297;
+  for(let i=a.length-1;i>0;i--){
+    s=(s*9301+49297)%233280;
+    const j=Math.floor(s/233280*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function ncWeeklySet(){
+  const w=ncWeekNo();
+  if(w<=NC_ROTATION.length){
+    const sub=NC_ROTATION[w-1];
+    return pairShuffle(ALL_PHRASES.filter(p=>p.cat==='NC'&&p.sub===sub),w);
+  }
+  const pool=ALL_PHRASES.filter(p=>p.cat==='NC'&&NC_ROTATION.includes(p.sub));
+  return pairSlice(pool,w,NC_MIX_SIZE);
+}
+// ペア（pg）を隣接させたままブロック単位でシャッフル（指示書 §5）
+function ncBlocks(pool){
+  const blocks=[],map={};
+  pool.forEach(p=>{
+    if(p.pg){ if(!map[p.pg]){map[p.pg]=[];blocks.push(map[p.pg]);} map[p.pg].push(p); }
+    else blocks.push([p]);
+  });
+  return blocks;
+}
+function pairShuffle(pool,seed){
+  const blocks=ncBlocks(pool);
+  const sh=seed==null?shuffle([...blocks]):seededShuffle(blocks,seed);
+  return [].concat(...sh);
+}
+// 上限までブロック単位で詰める。ペアを途中で割らない。
+function pairSlice(pool,seed,limit){
+  const blocks=ncBlocks(pool);
+  const sh=seed==null?shuffle([...blocks]):seededShuffle(blocks,seed);
+  const out=[];
+  for(const b of sh){ if(out.length+b.length>limit)break; out.push(...b); }
+  return out;
+}
+function buildAxisBar(cur,fnName,withNC){
+  let h='<div class="axis-bar">'+
+    `<button class="axis-btn${cur==='scene'?' active':''}" onclick="${fnName}('scene')">🏢 場面別</button>`+
+    `<button class="axis-btn${cur==='grammar'?' active':''}" onclick="${fnName}('grammar')">📐 文法別</button>`;
+  if(withNC)h+=`<button class="axis-btn${cur==='nc'?' active':''}" onclick="${fnName}('nc')">🔧 NC特訓</button>`;
+  return h+'</div>';
 }
 function shuffle(a){
   let arr=[...a];
@@ -1176,7 +1409,7 @@ function buildModeBar(){
     `<button class="mode-btn${c.id===currentCat?' active':''}" onclick="selectCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(currentCat,'setAxis');
+  if(ax)ax.innerHTML=buildAxisBar(axisMode,'setAxis',false);
 }
 function setAxis(a){
   axisMode=a;
@@ -1383,32 +1616,79 @@ function switchTop(mode){
   if(mode==='audio'){buildAudioModeBar();audioShowScreen('home');}
 }
 function buildEjModeBar(){
-  document.getElementById('ej-mode-bar').innerHTML=activeCatList().map(c=>
+  document.getElementById('ej-mode-bar').innerHTML=catListFor(ejAxis).map(c=>
     `<button class="mode-btn${c.id===ejCat?' active':''}" onclick="selectEjCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('ej-axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(ejCat,'setEjAxis');
+  if(ax)ax.innerHTML=buildAxisBar(ejAxis,'setEjAxis',true);
+  const wk=document.getElementById('ej-week-row');
+  if(wk){
+    if(ejAxis==='nc'){
+      wk.style.display='flex';
+      document.getElementById('ej-week-label').textContent=ncWeekLabel();
+    }else wk.style.display='none';
+  }
+  const sb=document.getElementById('ej-start-btn');
+  if(sb)sb.textContent='▶ スタート（'+ejPlannedSize()+'問）';
 }
-function setEjAxis(a){axisMode=a;ejCat=activeCatList()[0].id;buildEjModeBar();}
+function setEjAxis(a){ejAxis=a;ejCat=catListFor(a)[0].id;buildEjModeBar();}
 function selectEjCat(catId){ejCat=catId;buildEjModeBar();}
+function ejPlannedSize(){
+  if(ejAxis!=='nc')return 10;
+  const n=getPool(ejCat).length;
+  return Math.min(n||10,NC_MAX_SET);
+}
 function ejToggleShuffle(){
   ejShuffle=!ejShuffle;
   const tog=document.getElementById('ej-tog');
   ejShuffle?tog.classList.add('on'):tog.classList.remove('on');
 }
 function ejShowScreen(screen){
+  if(screen!=='practice')ejClearTimer();
   ['ej-home','ej-practice','ej-results'].forEach(id=>{
     document.getElementById(id).style.display=id==='ej-'+screen?'block':'none';
   });
 }
+const NC_MAX_SET=25;
 function ejStart(){
   const pool=getPool(ejCat);
-  let arr=ejShuffle?shuffle([...pool]):[...pool];
-  let full=[];
-  while(full.length<10)full=full.concat(arr);
-  ejSet=full.slice(0,10);
+  if(ejAxis==='nc'){
+    // 今週のセットは既に週固定の並び。個別カテゴリはペアを保ったままシャッフル。
+    const arr=(ejCat==='nc_week')?[...pool]:(ejShuffle?pairShuffle(pool,null):[...pool]);
+    ejSet=arr.slice(0,NC_MAX_SET);
+  }else{
+    let arr=ejShuffle?shuffle([...pool]):[...pool];
+    let full=[];
+    while(full.length<10)full=full.concat(arr);
+    ejSet=full.slice(0,10);
+  }
   ejIdx=0;ejScores=[];
   ejRender();ejShowScreen('practice');
+}
+let ejTimerSec=3, ejTimerId=null, ejTickId=null;
+function ejSetTimer(s){
+  ejTimerSec=s;
+  document.querySelectorAll('#ej-timer-seg .seg-btn').forEach(b=>{
+    b.classList.toggle('active',Number(b.dataset.s)===s);
+  });
+}
+function ejClearTimer(){
+  if(ejTimerId){clearTimeout(ejTimerId);ejTimerId=null;}
+  if(ejTickId){clearInterval(ejTickId);ejTickId=null;}
+}
+function ejStartTimer(){
+  ejClearTimer();
+  const row=document.getElementById('ej-timer-row');
+  if(!ejTimerSec){row.style.display='none';return;}
+  row.style.display='flex';
+  let left=ejTimerSec;
+  const num=document.getElementById('ej-timer-num');
+  const fill=document.getElementById('ej-timer-fill');
+  num.textContent=left;
+  fill.style.transition='none';fill.style.width='100%';
+  setTimeout(()=>{fill.style.transition=`width ${ejTimerSec}s linear`;fill.style.width='0%';},20);
+  ejTickId=setInterval(()=>{left--;num.textContent=left>0?left:0;},1000);
+  ejTimerId=setTimeout(()=>{ejClearTimer();ejReveal();},ejTimerSec*1000);
 }
 function ejRender(){
   const p=ejSet[ejIdx];
@@ -1420,10 +1700,14 @@ function ejRender(){
   ngEl.style.display='none';
   document.getElementById('ej-reveal-area').style.display='block';
   document.getElementById('ej-score-area').style.display='none';
-  document.getElementById('ej-prog-label').textContent=(ejIdx+1)+' / 10';
-  document.getElementById('ej-progress').style.width=((ejIdx+1)/10*100)+'%';
+  const n=ejSet.length;
+  document.getElementById('ej-prog-label').textContent=(ejIdx+1)+' / '+n;
+  document.getElementById('ej-progress').style.width=((ejIdx+1)/n*100)+'%';
+  ejStartTimer();
 }
 function ejReveal(){
+  ejClearTimer();
+  document.getElementById('ej-timer-row').style.display='none';
   document.getElementById('ej-en-text').style.display='block';
   const ngEl=document.getElementById('ej-ng-text');
   ngEl.style.display=ngEl.textContent?'block':'none';
@@ -1433,9 +1717,10 @@ function ejReveal(){
 function ejScore(score){
   ejScores.push(score);
   ejIdx++;
-  if(ejIdx>=10){ejShowResults();}else{ejRender();}
+  if(ejIdx>=ejSet.length){ejShowResults();}else{ejRender();}
 }
 function ejShowResults(){
+  ejClearTimer();
   const o=ejScores.filter(s=>s==='o').length;
   const d=ejScores.filter(s=>s==='d').length;
   const x=ejScores.filter(s=>s==='x').length;
@@ -1468,7 +1753,7 @@ function buildAudioModeBar(){
     `<button class="mode-btn${c.id===audioCat?' active':''}" onclick="selectAudioCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('audio-axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(audioCat,'setAudioAxis');
+  if(ax)ax.innerHTML=buildAxisBar(axisMode,'setAudioAxis',false);
 }
 function setAudioAxis(a){axisMode=a;audioCat=activeCatList()[0].id;buildAudioModeBar();}
 function selectAudioCat(id){audioCat=id;buildAudioModeBar();}
