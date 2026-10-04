@@ -37,7 +37,7 @@
   .ej-timer-fill { height: 100%; width: 100%; background: var(--accent); border-radius: 2px; }
   .ej-timer-num { font-size: 12px; font-weight: 700; color: var(--muted); min-width: 14px; text-align: right; }
   .axis-bar { display: flex; gap: 6px; margin-bottom: 10px; }
-  .axis-btn { font-family: var(--font); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; flex: 1; transition: all 0.15s; -webkit-appearance: none; }
+  .axis-btn { font-family: var(--font); font-size: 11px; font-weight: 600; padding: 6px 6px; white-space: nowrap; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; flex: 1; transition: all 0.15s; -webkit-appearance: none; }
   .axis-btn.active { background: var(--surface); color: var(--fg); border-color: var(--accent); }
   .axis-btn:active { opacity: 0.8; }
   .mode-bar { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
@@ -1203,6 +1203,123 @@ const ALL_PHRASES = [
 {cat:"NC",jp:"いいえ、違います。基調講演はデジタルマーケティングの未来についてです。",en:"No, it's not. The keynote speech is about the future of digital marketing.",g:"",sub:"講師模範文"},
 {cat:"NC",jp:"そうではありません。基調講演のテーマはデジタルマーケティングの未来です。",en:"That's not true. The subject of the keynote speech is the future of digital marketing.",g:"",sub:"講師模範文"},
 {cat:"NC",jp:"閉会の挨拶と交流会は午後3時から続きます。",en:"The closing remarks and networking opportunity will follow at 3 p.m.",g:"助動詞:未来",sub:"講師模範文"},
+// ========== 機能別チャンク30 (指示書 2026-09-25) ==========
+{cat:"CHUNK",jp:"私は〜だと思う",en:"I think ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"〜かどうか自信がない",en:"I'm not sure if ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"それは〜による",en:"It depends on ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"私の知る限りでは〜",en:"As far as I know, ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"あえて言うなら〜",en:"I'd say ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"私の視点では〜",en:"From my point of view, ~",g:"",sub:"意見・ヘッジ"},
+{cat:"CHUNK",jp:"理由は〜だからだ",en:"The reason is that ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"私が言いたいのは〜",en:"What I mean is ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"だから〜なのだ",en:"That's why ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"これは〜が理由だ",en:"This is because ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"言い換えると〜",en:"In other words, ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"要点は〜ということだ",en:"The main point is that ~",g:"",sub:"理由・説明"},
+{cat:"CHUNK",jp:"私はずっと〜している",en:"I've been -ing ~",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"私は〜する傾向がある",en:"I tend to ~",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"私は〜だと気づいた",en:"I've noticed that ~",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"私は以前〜していた(今は違う)",en:"I used to ~",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"私は今まで〜したことがない",en:"I've never ~ before",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"私は最近〜し始めた",en:"I've recently started -ing",g:"",sub:"経験・継続"},
+{cat:"CHUNK",jp:"賛成だが〜",en:"I agree with you, but ~",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"〜と比べると…",en:"Compared to ~, ...",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"一方で〜",en:"On the other hand, ~",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"〜と違って…",en:"Unlike ~, ...",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"〜だけれども…",en:"Even though ~, ...",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"〜である一方…",en:"While ~, ...",g:"",sub:"比較・逆接"},
+{cat:"CHUNK",jp:"個人的には〜だと思う",en:"I personally believe that ~",g:"",sub:"TOEIC応答"},
+{cat:"CHUNK",jp:"これにはいくつか理由がある",en:"There are a few reasons for this",g:"",sub:"TOEIC応答"},
+{cat:"CHUNK",jp:"まず第一に〜",en:"First of all, ~",g:"",sub:"TOEIC応答"},
+{cat:"CHUNK",jp:"まとめると〜",en:"To sum up, ~",g:"",sub:"TOEIC応答"},
+{cat:"CHUNK",jp:"提案したいことの一つは〜",en:"One thing I'd suggest is ~",g:"",sub:"TOEIC応答"},
+{cat:"CHUNK",jp:"もし自分がその立場なら〜するだろう",en:"If I were in that situation, I would ~",g:"",sub:"TOEIC応答"},
+// ========== NativeCamp 9/20-10/3 (13レッスン) 2026-10-04追加 ==========
+{cat:"NC",jp:"イベントはメインホールで行われます。",en:"The events will be held in the Main Hall.",g:"助動詞:未来|受動態|過去形",sub:"単複・冠詞",ng:"The event will be held in the Main Hall."},
+{cat:"NC",jp:"私は時々本を読みます。",en:"I sometimes read books.",g:"",sub:"単複・冠詞",ng:"I sometimes read a book."},
+{cat:"NC",jp:"子ども向けのヨガのクラスが2つあります。",en:"There are two children's yoga sessions.",g:"There構文",sub:"単複・冠詞",ng:"There are two children yoga sessions."},
+{cat:"NC",jp:"面接は会議室B-5で行われます。",en:"The interviews will be held in Conference Room B-5.",g:"助動詞:未来|受動態|過去形",sub:"単複・冠詞",ng:"The interview is located at conference room B5."},
+{cat:"NC",jp:"午前9時より前には、面接を1つも入れていません。",en:"We haven't scheduled any interviews before 9 a.m.",g:"現在完了",sub:"単複・冠詞",ng:"We haven't scheduled an interview before 9 a.m."},
+{cat:"NC",jp:"テーブルはU字型に並べられます。",en:"The tables will be arranged in a U-shape.",g:"助動詞:未来",sub:"単複・冠詞",ng:"The table will be arranged in U-shape."},
+{cat:"NC",jp:"いいえ、月末の会議は9月25日です。",en:"No, the meeting scheduled for the end of the month is on September 25th.",g:"",sub:"単複・冠詞",ng:"No, a meeting scheduled for the end of the month is September 25th."},
+{cat:"NC",jp:"コースは5月5日から6月25日まで行われます。",en:"The courses run from May 5 to June 25.",g:"",sub:"単複・冠詞",ng:"The course is run from May 5 to June 25."},
+{cat:"NC",jp:"彼女はマーケティングの修士号を持っています。",en:"She has a master's degree in marketing.",g:"",sub:"単複・冠詞",ng:"She has a master degree in marketing."},
+{cat:"NC",jp:"10歳以下の子どもは6ドルです。",en:"It's six dollars for children ten years old and under.",g:"",sub:"単複・冠詞",ng:"It's six dollars for children ten year old and under."},
+{cat:"NC",jp:"それはとても便利な方法です。",en:"It's a very convenient way.",g:"",sub:"単複・冠詞",ng:"It's very convenient way."},
+{cat:"NC",jp:"多くの人がスマートフォンを持っています。",en:"Many people have smartphones.",g:"",sub:"単複・冠詞",ng:"Many people have the smartphones."},
+{cat:"NC",jp:"本社はトロントにあります。",en:"Our headquarters is in Toronto.",g:"",sub:"単複・冠詞",ng:"My headquarter is Toronto."},
+{cat:"NC",jp:"今日は問題がたくさん起きました。",en:"A lot of problems came up today.",g:"過去形",sub:"単複・冠詞",ng:"Many trouble happened today."},
+{cat:"NC",jp:"人からアドバイスをもらうと、大きな決断で間違えずに済むと思います。",en:"When I get advice from others, I think I won't make a mistake when making a big decision.",g:"助動詞:未来|WH疑問|過去形",sub:"単複・冠詞",ng:"Since I get another advice, I don't make a mistake to decide any big decision."},
+{cat:"NC",jp:"1人10ドルです。",en:"It's ten dollars per person.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"学生は1人5ドルです。",en:"It's five dollars per student.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"大人は1人40ドル、子どもは1人25ドルです。",en:"It's forty dollars per adult and twenty-five dollars per child.",g:"",sub:"単複・冠詞",ng:"It's forty dollars per adult and twenty-five dollars per children."},
+{cat:"NC",jp:"チケットは1枚20ドルです。",en:"It's twenty dollars per ticket.",g:"",sub:"単複・冠詞"},
+{cat:"NC",jp:"シャトルバスは20分おきに運行しています。",en:"They run every 20 minutes.",g:"",sub:"単複・冠詞",ng:"It runs every 20 minutes."},
+{cat:"NC",jp:"はい、600人以上の参加者を見込んでいます。",en:"Yes, we're expecting over 600 attendees.",g:"進行形",sub:"単複・冠詞",ng:"Yes, we have attendees over 600 persons."},
+{cat:"NC",jp:"彼女はブラックバレーの本社で働きたいと考えています。",en:"She wants to work at the Black Valley Head Office.",g:"不定詞",sub:"be動詞・主述の一致",ng:"She want to work as a branch of Black Valley head office."},
+{cat:"NC",jp:"オリビア・ターナーは午前9時の予定です。",en:"Olivia Turner is scheduled for 9 a.m.",g:"受動態",sub:"be動詞・主述の一致",ng:"Olivia Turner ... It's scheduled for 9 a.m."},
+{cat:"NC",jp:"2人の今の勤務先は、キングストン博物館と現代美術研究所です。",en:"Their current employers are Kingston Museum and the Modern Art Institute.",g:"",sub:"be動詞・主述の一致",ng:"The current employer are Kingston Museum and the Modern Art Institute."},
+{cat:"NC",jp:"それはお嬢さんたちに合っています。",en:"It's suitable for your daughters.",g:"",sub:"be動詞・主述の一致",ng:"It is suit for your daughters."},
+{cat:"NC",jp:"レクリエーションセンターはオーク通り102番地にあります。",en:"The recreation center is located at 102 Oak Street.",g:"",sub:"前置詞",ng:"The recreation center is located on 102 Oak Street."},
+{cat:"NC",jp:"初心者向けの作文コースは6月17日に行われます。",en:"The Writing for Beginners course is held on June 17.",g:"受動態|過去形",sub:"前置詞",ng:"The Writing for Beginners course will be held in June 17th."},
+{cat:"NC",jp:"面接は10月5日に行われます。",en:"The interviews will be held on October 5th.",g:"助動詞:未来|受動態|過去形",sub:"前置詞",ng:"The job interviews at October 5th."},
+{cat:"NC",jp:"2つ目の面接は午前10時半に予定されています。",en:"The second interview is scheduled for 10:30 a.m.",g:"受動態|比較",sub:"前置詞",ng:"Second session will start 10:30 a.m."},
+{cat:"NC",jp:"伝統舞踊は午後3時に始まります。",en:"The traditional dance performance will start at 3 p.m.",g:"助動詞:未来",sub:"前置詞",ng:"It will start 3 p.m."},
+{cat:"NC",jp:"午後にはセッションが3つあります。",en:"There will be three sessions in the afternoon.",g:"助動詞:未来",sub:"前置詞",ng:"There will be three sessions from afternoon."},
+{cat:"NC",jp:"軽食は正午に用意されます。",en:"Some refreshments will be prepared at noon.",g:"助動詞:未来|受動態",sub:"前置詞",ng:"We will prepare the some refreshments in noon."},
+{cat:"NC",jp:"今朝ジムに行きました。",en:"I went to the gym this morning.",g:"過去形",sub:"前置詞",ng:"I went to the gym in this morning."},
+{cat:"NC",jp:"彼女はマーケティング部長の職に応募しています。",en:"She's applying for the position of Marketing Manager.",g:"",sub:"前置詞",ng:"She applied the position of marketing manager."},
+{cat:"NC",jp:"彼女はヒルクレスト大学を卒業しました。",en:"She graduated from Hillcrest College.",g:"",sub:"前置詞",ng:"She graduated Hillcrest College."},
+{cat:"NC",jp:"11月にスピーキングテストを受ける予定です。",en:"I'm planning to take the Speaking Test in November.",g:"不定詞|進行形",sub:"前置詞",ng:"I plan to try speaking test on November."},
+{cat:"NC",jp:"カナダ人の同僚と英語で話す必要があります。",en:"I need to speak with my Canadian colleagues in English.",g:"助動詞:義務",sub:"前置詞",ng:"I need to speak my colleague, Canadian colleague, with English."},
+{cat:"NC",jp:"外に出るのが好きです。",en:"I like going outside.",g:"",sub:"前置詞",ng:"I like going to outside."},
+{cat:"NC",jp:"すべてのイベントに登録が必要です。",en:"You need to register for all events.",g:"助動詞:義務",sub:"前置詞",ng:"You need to register all events."},
+{cat:"NC",jp:"チェックインは出発の180分前です。",en:"Check-in is 180 minutes before departure.",g:"",sub:"前置詞",ng:"Check-in time before 180 minutes."},
+{cat:"NC",jp:"2つ目のクラスは2月22日です。",en:"The second session is on February 22nd.",g:"比較",sub:"数字",ng:"The second session is on February 12th."},
+{cat:"NC",jp:"大人のチケットは12ドルです。",en:"It's twelve dollars for adults.",g:"",sub:"数字",ng:"It's twenty dollars for adults."},
+{cat:"NC",jp:"各コースは120ドルです。",en:"Each course costs a hundred and twenty dollars.",g:"",sub:"数字",ng:"Each course costs 12, 20, 20 dollars."},
+{cat:"NC",jp:"午前9時半から午前11時半までです。",en:"It's from 9:30 a.m. to 11:30 a.m.",g:"",sub:"数字",ng:"It's from 9:30 p.m. to 11:30 a.m."},
+{cat:"NC",jp:"目標スコアは160点です。",en:"I'm aiming for one sixty.",g:"進行形|句動詞",sub:"数字",ng:"I'm aiming for one sixteen."},
+{cat:"NC",jp:"時間は30秒しかありません。",en:"I only have thirty seconds.",g:"",sub:"数字",ng:"I only have thirty minutes."},
+{cat:"NC",jp:"会議は4月20日です。",en:"The conference is on April 20th.",g:"",sub:"数字",ng:"The conference is on April 12th."},
+{cat:"NC",jp:"セッションは午前8時半に始まります。",en:"The session will begin at 8:30 a.m.",g:"助動詞:未来",sub:"数字",ng:"The session will begin at 8:00 a.m."},
+{cat:"NC",jp:"いいえ、彼との昼食はブルーリッジ・カフェです。",en:"No, you're having lunch with him at Blue Ridge Cafe.",g:"進行形",sub:"否定で答える型",ng:"You have an appointment of lunch with clients at Blue Ridge Cafe."},
+{cat:"NC",jp:"どの面接も逃しません。最初の面接は午前9時からです。",en:"You won't miss any interviews. The first one starts at 9 a.m.",g:"助動詞:未来|比較|過去形",sub:"否定で答える型",ng:"We started, started, so..."},
+{cat:"NC",jp:"いいえ、水曜日にもイベントがあります。",en:"No, there's also an event on Wednesday.",g:"",sub:"否定で答える型",ng:"No, it will start June 1st on Friday but it will end June 12th on Wednesday."},
+{cat:"NC",jp:"はい、その通りです。顧客の声のセッションは正午で、話し手はオリビア・グラントです。",en:"Yes, that's correct. The Customer Feedback session is at 12 p.m., and Olivia Grant is the speaker.",g:"",sub:"否定で答える型",ng:"Customer feedback will start at 12 p.m."},
+{cat:"NC",jp:"面接は2つで、1つは午前9時、もう1つは午前10時半です。",en:"One is at 9 a.m., and the other is at 10:30 a.m.",g:"",sub:"情報応答の型",ng:"One is at 9 a.m., and another one is at 10:30 a.m."},
+{cat:"NC",jp:"リアム・オコナーは午後4時半の予定でしたが、面接は中止になりました。",en:"Liam O'Connor was scheduled for 4:30 p.m., but his interview has been canceled.",g:"現在完了|受動態|接続詞|過去形",sub:"情報応答の型",ng:"Liam O'Connor was scheduled for 4:30 p.m."},
+{cat:"NC",jp:"ジャズダンスのイベントは2月18日の午後7時から9時までです。",en:"The jazz dance event is on February 18th, from 7 to 9 p.m.",g:"",sub:"情報応答の型",ng:"Jazz dance event will be held on February 18th."},
+{cat:"NC",jp:"1つ目のセッションは午後1時半、2つ目は午後3時です。",en:"The first one is at 1:30 p.m., and the second one is at 3 p.m.",g:"比較",sub:"情報応答の型",ng:"First one is 1:30 p.m., second one is 3 p.m."},
+{cat:"NC",jp:"チームの評価会議はマイケル・ハリスが担当し、午前11時半に始まります。",en:"The Team Performance Review is led by Michael Harris, and it starts at 11:30 a.m.",g:"過去形",sub:"情報応答の型",ng:"Michael Harris is the speaker of agenda Team Performance Review. It will be held at 11:30 a.m."},
+{cat:"NC",jp:"軽食はメインホールで提供されます。",en:"They'll be served in the Main Hall.",g:"助動詞:未来",sub:"情報応答の型",ng:"We served in the main hall."},
+{cat:"NC",jp:"サラ・ジェンキンスは2つのセッションを担当します。",en:"Sarah Jenkins will be leading two sessions.",g:"助動詞:未来",sub:"情報応答の型"},
+{cat:"NC",jp:"1つ目は午前9時半から午後1時半までです。",en:"The first is from 9:30 a.m. to 1:30 p.m.",g:"比較",sub:"情報応答の型"},
+{cat:"NC",jp:"2つ目は午後2時から3時半までです。",en:"The second is from 2:00 p.m. to 3:30 p.m.",g:"比較",sub:"情報応答の型"},
+{cat:"NC",jp:"午後1時に顧客サービスの研修があり、続いて午後2時に客室準備の実演があります。",en:"At 1 p.m. there will be a workshop on customer service, followed by a demonstration of guest room setup at 2 p.m.",g:"助動詞:未来",sub:"情報応答の型"},
+{cat:"NC",jp:"はい、未払いが3件あります。",en:"Yes, there are three pending payments.",g:"There構文",sub:"情報応答の型"},
+{cat:"NC",jp:"1件目はフューチャー・ソリューションズのエミリー・カーターからで、期日は2月28日です。",en:"The first is from Emily Carter at Future Solutions, due February 28.",g:"比較",sub:"情報応答の型"},
+{cat:"NC",jp:"はい、その部分は延長できます。安全講習が延期されたので、昼食前に30分の余裕があります。",en:"Yes, it would be possible to extend that part of the schedule because the safety and emergency procedures part was postponed, so there will be an extra 30 minutes before lunch.",g:"助動詞:未来|接続詞|過去形",sub:"情報応答の型"},
+{cat:"NC",jp:"それはいつ行われますか。",en:"When will it take place?",g:"助動詞:未来|WH疑問|句動詞",sub:"情報応答の型"},
+{cat:"NC",jp:"スケジュールのその部分を延長することは可能でしょうか。",en:"Would it be possible to extend that part of the schedule?",g:"助動詞:依頼|YN疑問",sub:"情報応答の型"},
+{cat:"NC",jp:"この連休は、本を読んだりレッスンを受けたりしています。",en:"This Silver Week, I've been reading books and taking lessons.",g:"現在完了",sub:"時制",ng:"During Silver Week, I sometimes read books and take lessons."},
+{cat:"NC",jp:"先月ネイティブキャンプを始めました。",en:"I started NativeCamp last month.",g:"",sub:"時制",ng:"So I choose NativeCamp. So last month."},
+{cat:"NC",jp:"英語で十分に表現できませんでした。",en:"I couldn't express it well enough in English.",g:"",sub:"時制",ng:"I don't express it with English enough."},
+{cat:"NC",jp:"会場で機材を買うことができます。",en:"You can buy the equipment at the venue.",g:"",sub:"時制",ng:"You can bought the equipment at the venue."},
+{cat:"NC",jp:"大都市で暮らすことに慣れています。",en:"I'm used to living in a big city.",g:"過去形",sub:"複文の型",ng:"I'm used to live in a big city."},
+{cat:"NC",jp:"小さな町で暮らすのがどんな感じか分かりません。",en:"I don't know what it's like to live in a small town.",g:"",sub:"複文の型",ng:"I don't know the living in a small town's life."},
+{cat:"NC",jp:"一人で決めるのが難しいときがあります。",en:"Sometimes it's hard for me to decide by myself.",g:"",sub:"複文の型",ng:"Sometimes it's hard for me to decision by myself."},
+{cat:"NC",jp:"大きな決断をするときは、人の意見を聞くほうが好きです。",en:"I prefer to get advice from others when I make a big decision.",g:"不定詞",sub:"複文の型",ng:"I prefer to getting advice from others when I make a big decision."},
+{cat:"NC",jp:"とても便利なので、インターネットでニュースを得るほうが好きです。",en:"I prefer to get news on the Internet because it's very convenient.",g:"不定詞|接続詞",sub:"複文の型",ng:"So I prefer to get news on the internet because so it is very convenient way to get news or information."},
+{cat:"NC",jp:"外に出ることは、心身の健康を保つのにとても大切です。",en:"Going outside is very important for me to maintain my health, both mentally and physically.",g:"",sub:"複文の型",ng:"Going outside is very important for me to keep my health, both mentality and physically."},
+{cat:"NC",jp:"経験をたくさん積む必要があります。",en:"I need to gain a lot of experience.",g:"助動詞:義務",sub:"複文の型",ng:"I need to many experience."},
+{cat:"NC",jp:"気分転換が必要です。",en:"I need a change of scenery.",g:"",sub:"複文の型",ng:"I need to change my mind."},
+{cat:"NC",jp:"英語で考えを表すのが難しいです。",en:"It's hard for me to express my ideas in English.",g:"不定詞",sub:"振り返りの一言",ng:"I'm annoying to express my ideas in English."},
+{cat:"NC",jp:"正しく答えられたか自信がありません。",en:"I'm not sure I answered correctly.",g:"",sub:"振り返りの一言",ng:"I'm not so unsure."},
+{cat:"NC",jp:"準備ができました。",en:"Okay, I'm ready.",g:"命令依頼",sub:"振り返りの一言"},
+{cat:"NC",jp:"今日はとても忙しいです。",en:"I'm really busy today.",g:"",sub:"振り返りの一言",ng:"Today is so busy today."},
+{cat:"NC",jp:"日本語から英語に置き換えるのが難しいです。",en:"It's hard to transfer my thoughts from Japanese into English.",g:"不定詞",sub:"振り返りの一言"},
+{cat:"NC",jp:"ふさわしい言葉が見つかりません。",en:"I can't find the right words.",g:"",sub:"振り返りの一言",ng:"I cannot choose appropriate word."},
 ];
 
 const CATEGORIES = [
@@ -1256,18 +1373,33 @@ const NC_CATEGORIES = [
   {id:"nc_be",    label:"⚙️ be動詞・主述",  sub:["be動詞・主述の一致"]},
   {id:"nc_tense", label:"⏱ 時制",          sub:["時制"]},
   {id:"nc_neg",   label:"🚫 否定で答える型",sub:["否定で答える型"]},
+  {id:"nc_refl",  label:"🪞 振り返りの一言",sub:["振り返りの一言"]},
   {id:"nc_model", label:"📝 講師模範文",    sub:["講師模範文"]},
 ];
 // 週ローテーション（指示書 2026-09-18 §4-③）
-const NC_ROTATION = ["数字","単複・冠詞","複文の型","前置詞"];
+const NC_ROTATION = ["単複・冠詞","数字","複文の型","前置詞"];
+const NC_WEEK_SIZE = 25;   // 1週あたりの上限。超えるカテゴリは複数週に分割する
 const NC_MIX_SIZE = 20;
 
-// 軸切替: 'scene'（場面別）/ 'grammar'（文法別）/ 'nc'（NC特訓・瞬間英作文のみ）
-// シャドウ・音声版は scene/grammar のみ。EJ は独立した軸を持つ。
-let axisMode='scene';
-let ejAxis='scene';
+// 機能別チャンク（指示書 2026-09-25 要件A）
+const FN_CATEGORIES = [
+  {id:"fn_all",   label:"🔀 全チャンク",    sub:null},
+  {id:"fn_op",    label:"💭 意見・ヘッジ",  sub:["意見・ヘッジ"]},
+  {id:"fn_rsn",   label:"🧭 理由・説明",    sub:["理由・説明"]},
+  {id:"fn_exp",   label:"📆 経験・継続",    sub:["経験・継続"]},
+  {id:"fn_cmp",   label:"⚖️ 比較・逆接",    sub:["比較・逆接"]},
+  {id:"fn_toeic", label:"🎯 TOEIC応答",     sub:["TOEIC応答"]},
+];
+const FN_MAX_SET=30;
+
+// 軸切替: 'scene'（場面別）/ 'grammar'（文法別）/ 'nc'（NC特訓）/ 'fn'（機能別チャンク）
+// 3モードとも独立した軸を持つ。シャドウは scene/grammar のみ。
+let axisMode='scene';   // シャドウ
+let ejAxis='scene';     // 瞬間英作文
+let audioAxis='scene';  // 音声版
 function catListFor(a){
   if(a==='nc')return NC_CATEGORIES;
+  if(a==='fn')return FN_CATEGORIES;
   if(a==='grammar')return GRAMMAR_CATEGORIES;
   return CATEGORIES;
 }
@@ -1284,7 +1416,15 @@ let enGBVoice=null;
 let voiceGender='female';
 // 読み上げ・採点用に ~ / ... / 末尾記号を除去
 function ttsText(s){
-  return String(s||'').replace(/\s*~\s*$/,'').replace(/\s*\.\.\.\s*(\?)?\s*$/,'$1').replace(/\s*—\s*/g,', ').trim();
+  return String(s||'')
+    .replace(/\s*—\s*/g,', ')
+    .replace(/\s*-ing\b/g,'')      // 「I've been -ing」→「I've been」
+    .replace(/\s*~\s*/g,' ')       // 文中・文末の空欄記号を除去
+    .replace(/\s*\.\.\.\s*(\?)?\s*$/,'$1')
+    .replace(/\s+([,.!?])/g,'$1')  // 「Compared to , ...」→「Compared to,」
+    .replace(/[,\s]+$/,'')
+    .replace(/\s{2,}/g,' ')
+    .trim();
 }
 function pickEnGBVoice(){
   if(!synth)return null;
@@ -1308,9 +1448,14 @@ function dedupe(arr){
   const seen=new Set();
   return arr.filter(p=>{if(seen.has(p.en))return false;seen.add(p.en);return true;});
 }
-// NCデータは瞬間英作文モード専用（指示書 §3）。場面別・文法別の各プールからは除外する。
-function notNC(p){return p.cat!=='NC';}
+// NCデータ・チャンクは専用軸でのみ使う。場面別ランダム・文法別の各プールからは除外する。
+function notNC(p){return p.cat!=='NC'&&p.cat!=='CHUNK';}
 function getPool(catId){
+  const fcat=FN_CATEGORIES.find(c=>c.id===catId);
+  if(fcat){
+    if(!fcat.sub) return ALL_PHRASES.filter(p=>p.cat==='CHUNK');
+    return ALL_PHRASES.filter(p=>p.cat==='CHUNK'&&fcat.sub.includes(p.sub));
+  }
   const ncat=NC_CATEGORIES.find(c=>c.id===catId);
   if(ncat){
     if(!ncat.sub) return ncWeeklySet();
@@ -1343,9 +1488,21 @@ function ncWeekNo(){
   const days=Math.floor((today-st)/86400000);
   return Math.max(1,Math.floor(days/7)+1);
 }
+// カテゴリが NC_WEEK_SIZE を超えるときは複数週に割る
+function ncRotationPlan(){
+  const plan=[];
+  NC_ROTATION.forEach(sub=>{
+    const n=ALL_PHRASES.filter(p=>p.cat==='NC'&&p.sub===sub).length;
+    const parts=Math.max(1,Math.ceil(n/NC_WEEK_SIZE));
+    for(let i=0;i<parts;i++)plan.push({sub:sub,part:i,parts:parts});
+  });
+  return plan;
+}
 function ncWeekLabel(){
-  const w=ncWeekNo();
-  return w<=NC_ROTATION.length?`第${w}週：${NC_ROTATION[w-1]}`:`第${w}週：4カテゴリ混合`;
+  const plan=ncRotationPlan(),w=ncWeekNo();
+  if(w>plan.length)return `第${w}週：${NC_ROTATION.length}カテゴリ混合`;
+  const e=plan[w-1];
+  return `第${w}週：${e.sub}`+(e.parts>1?` (${e.part+1}/${e.parts})`:'');
 }
 function ncResetWeek(){
   try{localStorage.setItem('nc_start',new Date().toISOString().slice(0,10));}catch(e){}
@@ -1362,13 +1519,27 @@ function seededShuffle(arr,seed){
   return a;
 }
 function ncWeeklySet(){
-  const w=ncWeekNo();
-  if(w<=NC_ROTATION.length){
-    const sub=NC_ROTATION[w-1];
-    return pairShuffle(ALL_PHRASES.filter(p=>p.cat==='NC'&&p.sub===sub),w);
+  const plan=ncRotationPlan(),w=ncWeekNo();
+  if(w<=plan.length){
+    const e=plan[w-1];
+    const pool=ALL_PHRASES.filter(p=>p.cat==='NC'&&p.sub===e.sub);
+    return splitBlocks(pool,e.parts,1)[e.part]||[];
   }
   const pool=ALL_PHRASES.filter(p=>p.cat==='NC'&&NC_ROTATION.includes(p.sub));
   return pairSlice(pool,w,NC_MIX_SIZE);
+}
+// ペアを割らずに parts 個のブロック群へ等分する
+function splitBlocks(pool,parts,seed){
+  const blocks=seededShuffle(ncBlocks(pool),seed);
+  const target=Math.ceil(pool.length/parts);
+  const out=[];let cur=[];
+  for(const b of blocks){
+    if(cur.length>=target&&out.length<parts-1){out.push(cur);cur=[];}
+    cur.push(...b);
+  }
+  out.push(cur);
+  while(out.length<parts)out.push([]);
+  return out;
 }
 // ペア（pg）を隣接させたままブロック単位でシャッフル（指示書 §5）
 function ncBlocks(pool){
@@ -1392,12 +1563,12 @@ function pairSlice(pool,seed,limit){
   for(const b of sh){ if(out.length+b.length>limit)break; out.push(...b); }
   return out;
 }
-function buildAxisBar(cur,fnName,withNC){
-  let h='<div class="axis-bar">'+
-    `<button class="axis-btn${cur==='scene'?' active':''}" onclick="${fnName}('scene')">🏢 場面別</button>`+
-    `<button class="axis-btn${cur==='grammar'?' active':''}" onclick="${fnName}('grammar')">📐 文法別</button>`;
-  if(withNC)h+=`<button class="axis-btn${cur==='nc'?' active':''}" onclick="${fnName}('nc')">🔧 NC特訓</button>`;
-  return h+'</div>';
+const AXIS_LABEL={scene:'🏢 場面別',grammar:'📐 文法別',nc:'🔧 NC特訓',fn:'🧩 機能別'};
+function buildAxisBar(cur,fnName,extras){
+  const list=['scene','grammar'].concat(extras||[]);
+  return '<div class="axis-bar">'+list.map(a=>
+    `<button class="axis-btn${cur===a?' active':''}" onclick="${fnName}('${a}')">${AXIS_LABEL[a]}</button>`
+  ).join('')+'</div>';
 }
 function shuffle(a){
   let arr=[...a];
@@ -1409,7 +1580,7 @@ function buildModeBar(){
     `<button class="mode-btn${c.id===currentCat?' active':''}" onclick="selectCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(axisMode,'setAxis',false);
+  if(ax)ax.innerHTML=buildAxisBar(axisMode,'setAxis',[]);
 }
 function setAxis(a){
   axisMode=a;
@@ -1620,7 +1791,7 @@ function buildEjModeBar(){
     `<button class="mode-btn${c.id===ejCat?' active':''}" onclick="selectEjCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('ej-axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(ejAxis,'setEjAxis',true);
+  if(ax)ax.innerHTML=buildAxisBar(ejAxis,'setEjAxis',['nc','fn']);
   const wk=document.getElementById('ej-week-row');
   if(wk){
     if(ejAxis==='nc'){
@@ -1634,6 +1805,7 @@ function buildEjModeBar(){
 function setEjAxis(a){ejAxis=a;ejCat=catListFor(a)[0].id;buildEjModeBar();}
 function selectEjCat(catId){ejCat=catId;buildEjModeBar();}
 function ejPlannedSize(){
+  if(ejAxis==='fn')return Math.min(getPool(ejCat).length||10,FN_MAX_SET);
   if(ejAxis!=='nc')return 10;
   const n=getPool(ejCat).length;
   return Math.min(n||10,NC_MAX_SET);
@@ -1652,7 +1824,10 @@ function ejShowScreen(screen){
 const NC_MAX_SET=25;
 function ejStart(){
   const pool=getPool(ejCat);
-  if(ejAxis==='nc'){
+  if(ejAxis==='fn'){
+    const arr=ejShuffle?shuffle([...pool]):[...pool];
+    ejSet=arr.slice(0,FN_MAX_SET);
+  }else if(ejAxis==='nc'){
     // 今週のセットは既に週固定の並び。個別カテゴリはペアを保ったままシャッフル。
     const arr=(ejCat==='nc_week')?[...pool]:(ejShuffle?pairShuffle(pool,null):[...pool]);
     ejSet=arr.slice(0,NC_MAX_SET);
@@ -1749,13 +1924,13 @@ let audioPaused=false;
 let audioStopFlag=false;
 
 function buildAudioModeBar(){
-  document.getElementById('audio-mode-bar').innerHTML=activeCatList().map(c=>
+  document.getElementById('audio-mode-bar').innerHTML=catListFor(audioAxis).map(c=>
     `<button class="mode-btn${c.id===audioCat?' active':''}" onclick="selectAudioCat('${c.id}')">${c.label}</button>`
   ).join('');
   const ax=document.getElementById('audio-axis-bar');
-  if(ax)ax.innerHTML=buildAxisBar(axisMode,'setAudioAxis',false);
+  if(ax)ax.innerHTML=buildAxisBar(audioAxis,'setAudioAxis',['fn']);
 }
-function setAudioAxis(a){axisMode=a;audioCat=activeCatList()[0].id;buildAudioModeBar();}
+function setAudioAxis(a){audioAxis=a;audioCat=catListFor(a)[0].id;buildAudioModeBar();}
 function selectAudioCat(id){audioCat=id;buildAudioModeBar();}
 function audioToggleShuffle(){
   audioShuffleOn=!audioShuffleOn;
@@ -1842,9 +2017,13 @@ async function audioStart(){
   }catch(e){}
   const pool=getPool(audioCat);
   let arr=audioShuffleOn?shuffle([...pool]):[...pool];
-  let full=[];
-  while(full.length<10)full=full.concat(arr);
-  audioSet=full.slice(0,10);
+  if(audioAxis==='fn'){
+    audioSet=arr.slice(0,FN_MAX_SET);
+  }else{
+    let full=[];
+    while(full.length<10)full=full.concat(arr);
+    audioSet=full.slice(0,10);
+  }
   audioIdx=0;
   audioStopFlag=false;
   audioPaused=false;
