@@ -1320,6 +1320,22 @@ const ALL_PHRASES = [
 {cat:"NC",jp:"今日はとても忙しいです。",en:"I'm really busy today.",g:"",sub:"振り返りの一言",ng:"Today is so busy today."},
 {cat:"NC",jp:"日本語から英語に置き換えるのが難しいです。",en:"It's hard to transfer my thoughts from Japanese into English.",g:"不定詞",sub:"振り返りの一言"},
 {cat:"NC",jp:"ふさわしい言葉が見つかりません。",en:"I can't find the right words.",g:"",sub:"振り返りの一言",ng:"I cannot choose appropriate word."},
+// ========== NativeCamp 10/4 (講師Anna) 2026-10-04追加 ==========
+{cat:"NC",jp:"オフィスで働くほうが生産的だと思います。",en:"I think working in the office is more productive.",g:"比較",sub:"講師模範文4",pg:"m1"},
+{cat:"NC",jp:"まず、オフィスで働くと同僚や上司が見えるので、仕事に集中しやすくなります。",en:"First, when people work in an office, they can see their colleagues and managers, so they are more likely to focus on their work.",g:"不定詞|比較|接続詞|句動詞",sub:"講師模範文4",pg:"m1"},
+{cat:"NC",jp:"在宅勤務では気が散るものが多くあり、休憩を取ったり集中が切れたりしやすくなります。",en:"When people work from home, there can be many distractions, and it is easier to take breaks or lose focus.",g:"不定詞|WH疑問|句動詞|There構文",sub:"講師模範文4",pg:"m1"},
+{cat:"NC",jp:"さらに、オフィスでは社員同士が直接話せるので、やりとりが楽です。",en:"Also, communication is easier in the office because employees can talk to each other directly.",g:"接続詞",sub:"講師模範文4",pg:"m1",ng:"Although communication is easier in the office because employees can talk to each other directly."},
+{cat:"NC",jp:"こうした理由から、オフィスで働くほうが生産的だと思います。",en:"For these reasons, I think working in the office is more productive.",g:"比較",sub:"講師模範文4",pg:"m1"},
+{cat:"NC",jp:"語学のパートナーと練習するのが、英語を学ぶ一番良い方法だと思います。",en:"I think practicing with a language partner is the best way to learn English.",g:"不定詞|比較",sub:"講師模範文4",pg:"m2"},
+{cat:"NC",jp:"映画を観たり本を読んだりするのは受け身の学習ですが、言語を学ぶには能動的な学習のほうが大切だと思います。",en:"Watching movies and reading books are forms of passive learning, but I believe active learning is more important when learning a language.",g:"比較|接続詞",sub:"講師模範文4",pg:"m2",ng:"Watching movies and reading books are forms of passive learning, but I believe active learning is more important when learning the language."},
+{cat:"NC",jp:"たとえば、話したり書いたりすることで、実際に英語を使う機会が得られます。",en:"For example, speaking and writing give you opportunities to actually use English.",g:"",sub:"講師模範文4",pg:"m2"},
+{cat:"NC",jp:"語学のパートナーと練習すると、間違いを直してもらえて、より自然な文や言い方を教えてもらえます。",en:"When you practice with a language partner, they can correct your mistakes and teach you more natural sentences and expressions.",g:"比較|WH疑問",sub:"講師模範文4",pg:"m2"},
+{cat:"NC",jp:"本当の会話もできて、それが自信につながります。",en:"You can also have real conversations, which helps you become more confident.",g:"比較|関係詞|使役",sub:"講師模範文4",pg:"m2"},
+{cat:"NC",jp:"こうした理由から、語学のパートナーと練習するのが英語を学ぶ一番良い方法だと思います。",en:"For these reasons, I think practicing with a language partner is the best way to learn English.",g:"不定詞|比較",sub:"講師模範文4",pg:"m2",ng:"For these reasons, I think practicing with the language partner is the best way to learn English."},
+{cat:"NC",jp:"午後は本を読みました。",en:"In the afternoon, I read a book.",g:"過去形",sub:"前置詞",ng:"Afternoon, I read a book."},
+{cat:"NC",jp:"今朝ジムに行って、運動しました。",en:"This morning, I went to the gym and did some exercise.",g:"過去形",sub:"時制",ng:"Today, in this morning, I go to the gym."},
+{cat:"NC",jp:"このあと晩ご飯を作ります。",en:"I'm going to cook dinner now.",g:"助動詞:未来|不定詞|進行形",sub:"時制",ng:"The rest, I will cook dinner."},
+{cat:"NC",jp:"ふさわしい英語で表現するのが難しいです。",en:"It's hard to express myself in appropriate English.",g:"不定詞",sub:"振り返りの一言",ng:"It's hard to express and appropriate English."},
 ];
 
 const CATEGORIES = [
@@ -1374,6 +1390,7 @@ const NC_CATEGORIES = [
   {id:"nc_tense", label:"⏱ 時制",          sub:["時制"]},
   {id:"nc_neg",   label:"🚫 否定で答える型",sub:["否定で答える型"]},
   {id:"nc_refl",  label:"🪞 振り返りの一言",sub:["振り返りの一言"]},
+  {id:"nc_60",    label:"🎤 60秒答案",      sub:["講師模範文4"]},
   {id:"nc_model", label:"📝 講師模範文",    sub:["講師模範文"]},
 ];
 // 週ローテーション（指示書 2026-09-18 §4-③）
@@ -1829,8 +1846,9 @@ function ejStart(){
     ejSet=arr.slice(0,FN_MAX_SET);
   }else if(ejAxis==='nc'){
     // 今週のセットは既に週固定の並び。個別カテゴリはペアを保ったままシャッフル。
-    const arr=(ejCat==='nc_week')?[...pool]:(ejShuffle?pairShuffle(pool,null):[...pool]);
-    ejSet=arr.slice(0,NC_MAX_SET);
+    // かたまり（数字ペア・発音ペア・60秒答案のテーマ）を途中で切らない
+    ejSet=(ejCat==='nc_week')?[...pool].slice(0,NC_MAX_SET)
+         :(ejShuffle?pairSlice(pool,null,NC_MAX_SET):[...pool].slice(0,NC_MAX_SET));
   }else{
     let arr=ejShuffle?shuffle([...pool]):[...pool];
     let full=[];
