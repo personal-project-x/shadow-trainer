@@ -81,9 +81,43 @@
   .complete-view button { width: 100%; padding: 16px; font-size: 15px; }
   footer { height: env(safe-area-inset-bottom, 20px); }
   /* ── 瞬間英作文モード ── */
-  .top-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+  .top-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
   .top-bar-btn { padding: 10px 4px; font-size: 12px; font-weight: 600; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; -webkit-appearance: none; transition: all 0.15s; line-height: 1.3; }
   .top-bar-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+  .note-tabs { margin-bottom: 12px; }
+  .note-tabs .seg-btn { flex: 1; font-size: 13px; padding: 10px 6px; }
+  .note-import { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .note-file-btn { display: inline-block; font-size: 13px; font-weight: 600; padding: 11px 16px; border-radius: 10px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); cursor: pointer; }
+  .note-file-btn input { display: none; }
+  .note-msg { font-size: 11px; color: var(--muted); flex: 1; min-width: 120px; line-height: 1.5; }
+  .note-focus { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; margin-bottom: 10px; border: 1px solid var(--accent); border-radius: 10px; background: var(--surface); }
+  .note-focus-label { font-size: 12px; font-weight: 700; color: var(--text); }
+  .note-search { width: 100%; box-sizing: border-box; font-family: var(--font); font-size: 15px; padding: 11px 14px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); -webkit-appearance: none; }
+  .note-frow { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .note-flabel { font-size: 11px; color: var(--muted); min-width: 34px; flex-shrink: 0; }
+  .note-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+  .note-chip-btn { font-family: var(--font); font-size: 12px; padding: 7px 13px; border-radius: 16px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; -webkit-appearance: none; }
+  .note-chip-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+  .note-date { font-family: var(--font); font-size: 12px; padding: 7px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); -webkit-appearance: none; flex: 1; min-width: 0; }
+  .note-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 16px; margin-bottom: 11px; }
+  .note-card.done { opacity: 0.55; }
+  .note-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .note-tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: var(--surface2); color: var(--accent2); }
+  .note-meta { font-size: 11px; color: var(--muted); margin-left: auto; text-align: right; }
+  .note-said { font-size: 15px; line-height: 1.5; color: var(--red); margin-bottom: 8px; }
+  .note-fixed { font-size: 16px; line-height: 1.5; color: var(--green); margin-bottom: 8px; }
+  .note-good { font-size: 15px; line-height: 1.5; color: var(--green); margin-bottom: 7px; }
+  .note-point { font-size: 13px; line-height: 1.65; color: var(--text); margin-bottom: 10px; }
+  .note-rule-body { font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+  .note-title { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text); }
+  .note-tapline { font-size: 11px; color: var(--muted); text-align: center; padding: 6px 0 2px; }
+  .note-links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .note-links-label { font-size: 11px; color: var(--muted); }
+  .note-link { font-family: var(--font); font-size: 11px; padding: 5px 10px; border-radius: 14px; border: 1px solid var(--accent); background: transparent; color: var(--accent2); cursor: pointer; -webkit-appearance: none; text-align: left; }
+  .note-actions { display: flex; gap: 8px; }
+  .note-act { font-family: var(--font); font-size: 12px; font-weight: 600; padding: 9px 14px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; -webkit-appearance: none; }
+  .note-act.on { background: var(--green); color: #0f0f13; border-color: transparent; }
+  .note-empty { font-size: 13px; line-height: 1.8; color: var(--muted); text-align: center; padding: 34px 16px; }
   .ej-jp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 20px; margin-bottom: 14px; text-align: center; min-height: 130px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
   .ej-jp-text { font-size: 20px; font-weight: 500; color: var(--text); line-height: 1.5; }
   .ej-ng-text { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 10px; opacity: 0.75; width: 100%; }
@@ -126,6 +160,7 @@
       <button class="top-bar-btn active" id="tmb-s" onclick="switchTop('shadow')">🎙 シャドウ</button>
       <button class="top-bar-btn" id="tmb-e" onclick="switchTop('ej')">⚡ 瞬間英作文</button>
       <button class="top-bar-btn" id="tmb-a" onclick="switchTop('audio')">🔊 音声版</button>
+      <button class="top-bar-btn" id="tmb-n" onclick="switchTop('note')">📒 直しノート</button>
     </div>
     <div id="shadow-content">
     <div class="axis-bar-wrap" id="axis-bar"></div>
@@ -284,6 +319,29 @@
         </div>
       </div>
     </div><!-- /audio-content -->
+  <div id="note-content" style="display:none">
+    <div class="seg note-tabs">
+      <button class="seg-btn active" id="nt-corr" onclick="noteTab('corr')">📝 指摘一覧</button>
+      <button class="seg-btn" id="nt-rule" onclick="noteTab('rule')">📚 ルール集</button>
+    </div>
+
+    <div class="note-import">
+      <label class="note-file-btn">📂 手元のTSVを取り込む
+        <input type="file" id="note-file" accept=".tsv,.txt,.csv,text/plain,text/tab-separated-values" multiple onchange="noteImport(event)">
+      </label>
+      <div class="note-msg" id="note-msg"></div>
+    </div>
+
+    <div class="note-focus" id="note-focus-bar" style="display:none">
+      <span class="note-focus-label" id="note-focus-label"></span>
+      <button class="week-reset" onclick="noteClearFocus()">解除</button>
+    </div>
+
+    <input class="note-search" id="note-search" type="search" placeholder="英語・日本語で検索" oninput="noteRender()">
+
+    <div id="note-filters"></div>
+    <div id="note-list"></div>
+  </div>
   </div>
   <div id="complete-view" class="complete-view" style="display:none">
     <h2>🎉 セット完了！</h2>
@@ -1795,13 +1853,16 @@ function switchTop(mode){
   document.getElementById('tmb-s').className='top-bar-btn'+(mode==='shadow'?' active':'');
   document.getElementById('tmb-e').className='top-bar-btn'+(mode==='ej'?' active':'');
   document.getElementById('tmb-a').className='top-bar-btn'+(mode==='audio'?' active':'');
+  document.getElementById('tmb-n').className='top-bar-btn'+(mode==='note'?' active':'');
   document.getElementById('shadow-content').style.display=mode==='shadow'?'block':'none';
   document.getElementById('ej-content').style.display=mode==='ej'?'block':'none';
   document.getElementById('audio-content').style.display=mode==='audio'?'block':'none';
+  document.getElementById('note-content').style.display=mode==='note'?'block':'none';
   document.querySelector('.progress-wrap').style.display=mode==='shadow'?'block':'none';
   document.getElementById('set-badge').style.display=mode==='shadow'?'block':'none';
   if(mode==='ej'){buildEjModeBar();ejShowScreen('home');}
   if(mode==='audio'){buildAudioModeBar();audioShowScreen('home');}
+  if(mode==='note'){noteRender();}
 }
 function buildEjModeBar(){
   document.getElementById('ej-mode-bar').innerHTML=catListFor(ejAxis).map(c=>
@@ -2115,6 +2176,249 @@ function audioStop(){
 function audioGoHome(){audioShowScreen('home');}
 // ========================================
 buildModeBar();startNewSet();
+
+// ================= 直しノート（指示書 2026-10-22）=================
+// データは公開リポジトリに置かない。手元のTSVを取り込み、端末内にだけ保存する。
+let noteCorr=[], noteRules=[], noteLearned={};
+let noteTabCur='corr', noteView='list', noteOpen={};
+let noteF={cat:'',teacher:'',status:'',from:'',to:''};
+let noteFocus=null;
+
+function noteLoad(){
+  try{
+    noteCorr=JSON.parse(localStorage.getItem('note_corr')||'[]');
+    noteRules=JSON.parse(localStorage.getItem('note_rules')||'[]');
+    noteLearned=JSON.parse(localStorage.getItem('note_learned')||'{}');
+    noteView=localStorage.getItem('note_view')||'list';
+  }catch(e){noteCorr=[];noteRules=[];noteLearned={};}
+}
+function noteSave(){
+  try{
+    localStorage.setItem('note_corr',JSON.stringify(noteCorr));
+    localStorage.setItem('note_rules',JSON.stringify(noteRules));
+    localStorage.setItem('note_learned',JSON.stringify(noteLearned));
+    localStorage.setItem('note_view',noteView);
+  }catch(e){}
+}
+function noteEsc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function noteParseTSV(text){
+  const lines=String(text||'').replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n').split('\n').filter(l=>l.trim()!=='');
+  if(lines.length<2)return null;
+  const head=lines[0].split('\t').map(h=>h.trim());
+  const rows=lines.slice(1).map(l=>{
+    const c=l.split('\t'),o={};
+    head.forEach((h,i)=>{o[h]=(c[i]||'').trim();});
+    return o;
+  }).filter(o=>o.id);
+  return {head:head,rows:rows};
+}
+function noteMerge(cur,rows){
+  const map={};
+  cur.forEach(r=>{map[r.id]=r;});
+  rows.forEach(r=>{map[r.id]=r;});   // 同じidは新しい内容で上書き
+  return Object.keys(map).map(k=>map[k]);
+}
+function noteSortCorr(a,b){
+  const d=String(b.date||'').localeCompare(String(a.date||''));
+  return d!==0?d:String(a.id).localeCompare(String(b.id));
+}
+function noteImport(ev){
+  const files=Array.prototype.slice.call(ev.target.files||[]);
+  ev.target.value='';
+  if(!files.length)return;
+  const msgs=[];let done=0;
+  const finish=()=>{
+    if(++done<files.length)return;
+    noteSave();noteRender();
+    document.getElementById('note-msg').textContent=msgs.join(' / ');
+  };
+  files.forEach(f=>{
+    const rd=new FileReader();
+    rd.onload=()=>{
+      const p=noteParseTSV(rd.result);
+      if(!p||!p.rows.length){msgs.push(f.name+'：読み取れませんでした');}
+      else if(p.head.indexOf('said')>=0&&p.head.indexOf('fixed')>=0){
+        noteCorr=noteMerge(noteCorr,p.rows).sort(noteSortCorr);
+        msgs.push('指摘 '+p.rows.length+'件');
+      }else if(p.head.indexOf('title')>=0&&p.head.indexOf('rule')>=0){
+        noteRules=noteMerge(noteRules,p.rows).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+        msgs.push('ルール '+p.rows.length+'件');
+      }else{msgs.push(f.name+'：見出しが合いません');}
+      finish();
+    };
+    rd.onerror=()=>{msgs.push(f.name+'：読み取れませんでした');finish();};
+    rd.readAsText(f);
+  });
+}
+function noteTab(t){noteTabCur=t;noteFocus=null;noteRender();}
+function noteSetView(v){noteView=v;noteOpen={};noteSave();noteRender();}
+function noteSetF(k,v){noteF[k]=(noteF[k]===v?'':v);noteRender();}
+function noteSetDate(k,v){noteF[k]=v;noteRender();}
+function noteClearFocus(){noteFocus=null;noteRender();}
+function noteJump(tab,id,mode){
+  noteTabCur=tab;noteFocus={tab:tab,id:id,mode:mode||'id'};
+  noteF={cat:'',teacher:'',status:'',from:'',to:''};
+  const s=document.getElementById('note-search');if(s)s.value='';
+  noteRender();
+  const m=document.querySelector('main');if(m)m.scrollTop=0;
+}
+function noteToggleOpen(id,ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  noteOpen[id]=!noteOpen[id];noteRender();
+}
+function noteToggleLearned(id,ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  if(noteLearned[id])delete noteLearned[id];else noteLearned[id]=1;
+  noteSave();noteRender();
+}
+function noteSpeak(txt,ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  speak(txt,1.0,null);
+}
+function noteUniq(arr,key){
+  const out=[],seen={};
+  arr.forEach(r=>{const v=(r[key]||'').trim();if(v&&!seen[v]){seen[v]=1;out.push(v);}});
+  return out.sort();
+}
+function noteMatch(r,q,keys){
+  if(!q)return true;
+  const s=keys.map(k=>r[k]||'').join(' ').toLowerCase();
+  return s.indexOf(q)>=0;
+}
+function noteChips(label,key,vals,cur){
+  if(!vals.length)return '';
+  let h='<div class="note-frow"><span class="note-flabel">'+label+'</span><div class="note-chips">';
+  h+='<button class="note-chip-btn'+(cur===''?' active':'')+'" onclick="noteSetF(\''+key+'\',\'\')">全部</button>';
+  vals.forEach(v=>{
+    h+='<button class="note-chip-btn'+(cur===v?' active':'')+'" onclick="noteSetF(\''+key+'\',\''+noteEsc(v).replace(/'/g,"\\'")+'\')">'+noteEsc(v)+'</button>';
+  });
+  return h+'</div></div>';
+}
+function noteRuleTitle(id){
+  const r=noteRules.filter(x=>x.id===id)[0];
+  return r?r.title:id;
+}
+function noteRuleIds(c){
+  return String(c.rules||'').split(',').map(s=>s.trim()).filter(Boolean);
+}
+function noteRender(){
+  const list=document.getElementById('note-list');
+  if(!list)return;
+  document.getElementById('nt-corr').className='seg-btn'+(noteTabCur==='corr'?' active':'');
+  document.getElementById('nt-rule').className='seg-btn'+(noteTabCur==='rule'?' active':'');
+  const q=(document.getElementById('note-search').value||'').trim().toLowerCase();
+
+  const fb=document.getElementById('note-focus-bar');
+  if(noteFocus&&noteFocus.tab===noteTabCur){
+    fb.style.display='flex';
+    document.getElementById('note-focus-label').textContent=
+      (noteFocus.mode==='byrule'?noteFocus.id+' に紐づく指摘':noteFocus.id)+' を表示中';
+  }else{fb.style.display='none';}
+
+  if(noteTabCur==='corr')noteRenderCorr(q);else noteRenderRule(q);
+}
+function noteRenderCorr(q){
+  const fil=document.getElementById('note-filters'),list=document.getElementById('note-list');
+  let h='<div class="note-frow"><span class="note-flabel">表示</span><div class="seg">'+
+    '<button class="seg-btn'+(noteView==='list'?' active':'')+'" onclick="noteSetView(\'list\')">一覧表示</button>'+
+    '<button class="seg-btn'+(noteView==='quiz'?' active':'')+'" onclick="noteSetView(\'quiz\')">確認表示</button>'+
+    '</div></div>';
+  h+=noteChips('分類','cat',noteUniq(noteCorr,'category'),noteF.cat);
+  h+=noteChips('講師','teacher',noteUniq(noteCorr,'teacher'),noteF.teacher);
+  h+='<div class="note-frow"><span class="note-flabel">状態</span><div class="note-chips">'+
+    '<button class="note-chip-btn'+(noteF.status===''?' active':'')+'" onclick="noteSetF(\'status\',\'\')">全部</button>'+
+    '<button class="note-chip-btn'+(noteF.status==='new'?' active':'')+'" onclick="noteSetF(\'status\',\'new\')">未確認</button>'+
+    '<button class="note-chip-btn'+(noteF.status==='done'?' active':'')+'" onclick="noteSetF(\'status\',\'done\')">覚えた</button>'+
+    '</div></div>';
+  h+='<div class="note-frow"><span class="note-flabel">期間</span>'+
+    '<input class="note-date" type="date" value="'+noteEsc(noteF.from)+'" onchange="noteSetDate(\'from\',this.value)">'+
+    '<span class="note-flabel">〜</span>'+
+    '<input class="note-date" type="date" value="'+noteEsc(noteF.to)+'" onchange="noteSetDate(\'to\',this.value)">'+
+    '</div>';
+  fil.innerHTML=h;
+
+  if(!noteCorr.length){
+    list.innerHTML='<div class="note-empty">まだ取り込まれていません。<br>上の「手元のTSVを取り込む」から<br>corrections.tsv と rules.tsv を選んでください。</div>';
+    return;
+  }
+  let rows=noteCorr.filter(c=>{
+    if(noteFocus&&noteFocus.tab==='corr'){
+      if(noteFocus.mode==='byrule')return noteRuleIds(c).indexOf(noteFocus.id)>=0;
+      return c.id===noteFocus.id;
+    }
+    if(noteF.cat&&c.category!==noteF.cat)return false;
+    if(noteF.teacher&&c.teacher!==noteF.teacher)return false;
+    if(noteF.status==='new'&&noteLearned[c.id])return false;
+    if(noteF.status==='done'&&!noteLearned[c.id])return false;
+    if(noteF.from&&String(c.date||'')<noteF.from)return false;
+    if(noteF.to&&String(c.date||'')>noteF.to)return false;
+    return noteMatch(c,q,['id','said','fixed','point','category','teacher','source']);
+  });
+  if(!rows.length){list.innerHTML='<div class="note-empty">条件に合う指摘がありません。</div>';return;}
+
+  list.innerHTML=rows.map(c=>{
+    const done=!!noteLearned[c.id];
+    const open=noteView==='list'||noteOpen[c.id];
+    let s='<div class="note-card'+(done?' done':'')+'" onclick="noteToggleOpen(\''+c.id+'\',event)">';
+    s+='<div class="note-head"><span class="note-tag">'+noteEsc(c.category)+'</span>'+
+       '<span class="note-meta">'+noteEsc(c.date)+' '+noteEsc(c.teacher)+'<br>'+noteEsc(c.source)+'</span></div>';
+    s+='<div class="note-said">❌ '+noteEsc(c.said)+'</div>';
+    if(open){
+      s+='<div class="note-fixed">✅ '+noteEsc(c.fixed)+'</div>';
+      s+='<div class="note-point">'+noteEsc(c.point)+'</div>';
+      const rl=noteRuleIds(c);
+      if(rl.length){
+        s+='<div class="note-links"><span class="note-links-label">関連ルール</span>';
+        rl.forEach(id=>{s+='<button class="note-link" onclick="noteJump(\'rule\',\''+id+'\');event.stopPropagation()">'+noteEsc(id)+' '+noteEsc(noteRuleTitle(id))+'</button>';});
+        s+='</div>';
+      }
+      s+='<div class="note-actions">'+
+         '<button class="note-act" onclick="noteSpeak(\''+noteEsc(c.fixed).replace(/'/g,"\\'")+'\',event)">🔊 読み上げ</button>'+
+         '<button class="note-act'+(done?' on':'')+'" onclick="noteToggleLearned(\''+c.id+'\',event)">'+(done?'✓ 覚えた':'覚えた')+'</button>'+
+         '</div>';
+    }else{
+      s+='<div class="note-tapline">タップして直した形を見る</div>';
+    }
+    return s+'</div>';
+  }).join('');
+}
+function noteRenderRule(q){
+  const fil=document.getElementById('note-filters'),list=document.getElementById('note-list');
+  fil.innerHTML=noteChips('分類','cat',noteUniq(noteRules,'category'),noteF.cat);
+  if(!noteRules.length){
+    list.innerHTML='<div class="note-empty">まだ取り込まれていません。<br>上の「手元のTSVを取り込む」から<br>rules.tsv を選んでください。</div>';
+    return;
+  }
+  let rows=noteRules.filter(r=>{
+    if(noteFocus&&noteFocus.tab==='rule')return r.id===noteFocus.id;
+    if(noteF.cat&&r.category!==noteF.cat)return false;
+    return noteMatch(r,q,['id','title','rule','good','bad','category']);
+  });
+  if(!rows.length){list.innerHTML='<div class="note-empty">条件に合うルールがありません。</div>';return;}
+
+  list.innerHTML=rows.map(r=>{
+    const linked=noteCorr.filter(c=>noteRuleIds(c).indexOf(r.id)>=0);
+    let s='<div class="note-card">';
+    s+='<div class="note-head"><span class="note-tag">'+noteEsc(r.category)+'</span>'+
+       '<span class="note-meta">'+noteEsc(r.id)+'</span></div>';
+    s+='<div class="note-title">'+noteEsc(r.title)+'</div>';
+    s+='<div class="note-rule-body">'+noteEsc(r.rule)+'</div>';
+    if(r.good)s+='<div class="note-good">✅ '+noteEsc(r.good)+'</div>';
+    if(r.bad)s+='<div class="note-said">❌ '+noteEsc(r.bad)+'</div>';
+    if(linked.length){
+      s+='<div class="note-links"><span class="note-links-label">関連する指摘</span>';
+      linked.forEach(c=>{s+='<button class="note-link" onclick="noteJump(\'corr\',\''+c.id+'\')">'+noteEsc(c.id)+'</button>';});
+      s+='<button class="note-link" onclick="noteJump(\'corr\',\''+r.id+'\',\'byrule\')">まとめて見る</button>';
+      s+='</div>';
+    }
+    if(r.good)s+='<div class="note-actions"><button class="note-act" onclick="noteSpeak(\''+noteEsc(r.good).replace(/'/g,"\\'")+'\',event)">🔊 読み上げ</button></div>';
+    return s+'</div>';
+  }).join('');
+}
+noteLoad();
 </script>
 </body>
 </html>
