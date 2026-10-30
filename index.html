@@ -117,6 +117,14 @@
   .note-actions { display: flex; gap: 8px; }
   .note-act { font-family: var(--font); font-size: 12px; font-weight: 600; padding: 9px 14px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; -webkit-appearance: none; }
   .note-act.on { background: var(--green); color: #0f0f13; border-color: transparent; }
+  .note-focus-tag { background: var(--accent); color: #fff; }
+  .note-done-tag { background: var(--green); color: #0f0f13; }
+  .note-pri { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 13px 14px; margin-bottom: 12px; }
+  .note-pri-head { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent2); margin-bottom: 9px; }
+  .note-pri-item { display: flex; align-items: center; gap: 9px; width: 100%; box-sizing: border-box; text-align: left; font-family: var(--font); font-size: 13px; line-height: 1.4; padding: 9px 10px; margin-bottom: 5px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; -webkit-appearance: none; }
+  .note-pri-no { flex-shrink: 0; width: 19px; height: 19px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .note-lesson-head { border-color: var(--accent); }
+  .note-lesson-sep { font-size: 11px; color: var(--muted); margin: 0 0 6px 4px; }
   .note-empty { font-size: 13px; line-height: 1.8; color: var(--muted); text-align: center; padding: 34px 16px; }
   .ej-jp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 20px; margin-bottom: 14px; text-align: center; min-height: 130px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
   .ej-jp-text { font-size: 20px; font-weight: 500; color: var(--text); line-height: 1.5; }
@@ -323,6 +331,7 @@
     <div class="seg note-tabs">
       <button class="seg-btn active" id="nt-corr" onclick="noteTab('corr')">📝 指摘一覧</button>
       <button class="seg-btn" id="nt-rule" onclick="noteTab('rule')">📚 ルール集</button>
+      <button class="seg-btn" id="nt-lesson" onclick="noteTab('lesson')">📅 レッスン別</button>
     </div>
 
     <div class="note-import">
@@ -2179,23 +2188,28 @@ buildModeBar();startNewSet();
 
 // ================= 直しノート（指示書 2026-10-22）=================
 // データは公開リポジトリに置かない。手元のTSVを取り込み、端末内にだけ保存する。
-let noteCorr=[], noteRules=[], noteLearned={};
+let noteCorr=[], noteRules=[], noteLessons=[], noteLearned={};
 let noteTabCur='corr', noteView='list', noteOpen={};
-let noteF={cat:'',teacher:'',status:'',from:'',to:''};
+let noteF={cat:'',teacher:'',status:'',from:'',to:'',lesson:'',focusonly:''};
 let noteFocus=null;
+let noteLesson=null;      // 開いているレッスンの id
+let noteSweep=false;      // 重点をまとめて振り返る
+let noteSweepSkip=true;   // 覚えたを飛ばす
 
 function noteLoad(){
   try{
     noteCorr=JSON.parse(localStorage.getItem('note_corr')||'[]');
     noteRules=JSON.parse(localStorage.getItem('note_rules')||'[]');
+    noteLessons=JSON.parse(localStorage.getItem('note_lessons')||'[]');
     noteLearned=JSON.parse(localStorage.getItem('note_learned')||'{}');
     noteView=localStorage.getItem('note_view')||'list';
-  }catch(e){noteCorr=[];noteRules=[];noteLearned={};}
+  }catch(e){noteCorr=[];noteRules=[];noteLessons=[];noteLearned={};}
 }
 function noteSave(){
   try{
     localStorage.setItem('note_corr',JSON.stringify(noteCorr));
     localStorage.setItem('note_rules',JSON.stringify(noteRules));
+    localStorage.setItem('note_lessons',JSON.stringify(noteLessons));
     localStorage.setItem('note_learned',JSON.stringify(noteLearned));
     localStorage.setItem('note_view',noteView);
   }catch(e){}
@@ -2220,6 +2234,10 @@ function noteMerge(cur,rows){
   cur.forEach(r=>{map[r.id]=r;});
   rows.forEach(r=>{map[r.id]=r;});   // 同じidは新しい内容で上書き
   return Object.keys(map).map(k=>map[k]);
+}
+function noteSortLesson(a,b){
+  const d=String(b.date||'').localeCompare(String(a.date||''));   // 新しい順
+  return d!==0?d:String(b.id||'').localeCompare(String(a.id||''));
 }
 function noteSortCorr(a,b){
   const d=String(b.date||'').localeCompare(String(a.date||''));
@@ -2246,6 +2264,9 @@ function noteImport(ev){
       }else if(p.head.indexOf('title')>=0&&p.head.indexOf('rule')>=0){
         noteRules=noteMerge(noteRules,p.rows).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
         msgs.push('ルール '+p.rows.length+'件');
+      }else if(p.head.indexOf('material')>=0&&p.head.indexOf('date')>=0){
+        noteLessons=noteMerge(noteLessons,p.rows).sort(noteSortLesson);
+        msgs.push('レッスン '+p.rows.length+'件');
       }else{msgs.push(f.name+'：見出しが合いません');}
       finish();
     };
@@ -2253,14 +2274,14 @@ function noteImport(ev){
     rd.readAsText(f);
   });
 }
-function noteTab(t){noteTabCur=t;noteFocus=null;noteRender();}
+function noteTab(t){noteTabCur=t;noteFocus=null;noteLesson=null;noteSweep=false;noteRender();}
 function noteSetView(v){noteView=v;noteOpen={};noteSave();noteRender();}
 function noteSetF(k,v){noteF[k]=(noteF[k]===v?'':v);noteRender();}
 function noteSetDate(k,v){noteF[k]=v;noteRender();}
 function noteClearFocus(){noteFocus=null;noteRender();}
 function noteJump(tab,id,mode){
   noteTabCur=tab;noteFocus={tab:tab,id:id,mode:mode||'id'};
-  noteF={cat:'',teacher:'',status:'',from:'',to:''};
+  noteF={cat:'',teacher:'',status:'',from:'',to:'',lesson:'',focusonly:''};
   const s=document.getElementById('note-search');if(s)s.value='';
   noteRender();
   const m=document.querySelector('main');if(m)m.scrollTop=0;
@@ -2309,6 +2330,7 @@ function noteRender(){
   if(!list)return;
   document.getElementById('nt-corr').className='seg-btn'+(noteTabCur==='corr'?' active':'');
   document.getElementById('nt-rule').className='seg-btn'+(noteTabCur==='rule'?' active':'');
+  document.getElementById('nt-lesson').className='seg-btn'+(noteTabCur==='lesson'?' active':'');
   const q=(document.getElementById('note-search').value||'').trim().toLowerCase();
 
   const fb=document.getElementById('note-focus-bar');
@@ -2318,7 +2340,132 @@ function noteRender(){
       (noteFocus.mode==='byrule'?noteFocus.id+' に紐づく指摘':noteFocus.id)+' を表示中';
   }else{fb.style.display='none';}
 
-  if(noteTabCur==='corr')noteRenderCorr(q);else noteRenderRule(q);
+  if(noteTabCur==='corr')noteRenderCorr(q);
+  else if(noteTabCur==='rule')noteRenderRule(q);
+  else noteRenderLesson(q);
+}
+
+// ---------- 補助 ----------
+function noteFocusRows(lessonId){
+  return noteCorr.filter(c=>c.lesson===lessonId&&String(c.focus||'').trim())
+    .sort((a,b)=>String(a.focus).localeCompare(String(b.focus)));
+}
+function noteLessonDone(lessonId){
+  const f=noteFocusRows(lessonId);
+  return f.length>0&&f.every(c=>noteLearned[c.id]);
+}
+function noteHasFocus(){
+  return noteCorr.some(c=>String(c.focus||'').trim());
+}
+function noteLessonById(id){
+  const l=noteLessons.filter(x=>x.id===id)[0];
+  return l||null;
+}
+function noteJumpLesson(id){
+  noteTabCur='lesson';noteLesson=id;noteSweep=false;noteFocus=null;
+  noteRender();const m=document.querySelector('main');if(m)m.scrollTop=0;
+}
+function noteBackLessons(){noteLesson=null;noteSweep=false;noteRender();}
+function noteToggleSweep(){noteSweep=!noteSweep;noteLesson=null;noteRender();}
+function noteToggleSkip(){noteSweepSkip=!noteSweepSkip;noteRender();}
+function noteFilterByLesson(id){
+  noteTabCur='corr';noteLesson=null;noteSweep=false;noteFocus=null;
+  noteF={cat:'',teacher:'',status:'',from:'',to:'',lesson:id,focusonly:''};
+  const s=document.getElementById('note-search');if(s)s.value='';
+  noteRender();const m=document.querySelector('main');if(m)m.scrollTop=0;
+}
+// 指摘カードの本体（レッスン別でも使い回す）
+function noteCorrCardHTML(c,open){
+  const done=!!noteLearned[c.id];
+  let s='<div class="note-card'+(done?' done':'')+'" onclick="noteToggleOpen(\''+c.id+'\',event)">';
+  s+='<div class="note-head">';
+  if(String(c.focus||'').trim())s+='<span class="note-tag note-focus-tag">重点'+noteEsc(c.focus)+'</span>';
+  s+='<span class="note-tag">'+noteEsc(c.category)+'</span>'+
+     '<span class="note-meta">'+noteEsc(c.date)+' '+noteEsc(c.teacher)+'<br>'+noteEsc(c.source)+'</span></div>';
+  s+='<div class="note-said">❌ '+noteEsc(c.said)+'</div>';
+  if(open){
+    s+='<div class="note-fixed">✅ '+noteEsc(c.fixed)+'</div>';
+    s+='<div class="note-point">'+noteEsc(c.point)+'</div>';
+    const rl=noteRuleIds(c);
+    if(rl.length){
+      s+='<div class="note-links"><span class="note-links-label">関連ルール</span>';
+      rl.forEach(id=>{s+='<button class="note-link" onclick="noteJump(\'rule\',\''+id+'\');event.stopPropagation()">'+noteEsc(id)+' '+noteEsc(noteRuleTitle(id))+'</button>';});
+      s+='</div>';
+    }
+    s+='<div class="note-actions">'+
+       '<button class="note-act" onclick="noteSpeak(\''+noteEsc(c.fixed).replace(/'/g,"\\'")+'\',event)">🔊 読み上げ</button>'+
+       '<button class="note-act'+(done?' on':'')+'" onclick="noteToggleLearned(\''+c.id+'\',event)">'+(done?'✓ 覚えた':'覚えた')+'</button>'+
+       '</div>';
+  }else{
+    s+='<div class="note-tapline">タップして直した形を見る</div>';
+  }
+  return s+'</div>';
+}
+// 「いまの重点」（rules.tsv の priority）
+function notePriorityHTML(){
+  const pr=noteRules.filter(r=>String(r.priority||'').trim())
+    .sort((a,b)=>String(a.priority).localeCompare(String(b.priority))||String(a.id).localeCompare(String(b.id)));
+  if(!pr.length)return '';
+  let h='<div class="note-pri"><div class="note-pri-head">いまの重点</div>';
+  pr.forEach(r=>{
+    h+='<button class="note-pri-item" onclick="noteJump(\'rule\',\''+r.id+'\')">'+
+       '<span class="note-pri-no">'+noteEsc(r.priority)+'</span>'+noteEsc(r.title)+'</button>';
+  });
+  return h+'</div>';
+}
+function noteRenderLesson(q){
+  const fil=document.getElementById('note-filters'),list=document.getElementById('note-list');
+  if(!noteLessons.length){
+    fil.innerHTML='';
+    list.innerHTML='<div class="note-empty">レッスンの一覧がありません。<br>上の「手元のTSVを取り込む」から<br>lessons.tsv を選んでください。</div>';
+    return;
+  }
+  // --- まとめて振り返る ---
+  if(noteSweep){
+    fil.innerHTML='<div class="note-frow"><button class="note-act" onclick="noteToggleSweep()">← レッスン一覧へ</button>'+
+      '<button class="note-act'+(noteSweepSkip?' on':'')+'" onclick="noteToggleSkip()">'+(noteSweepSkip?'✓ 覚えたを飛ばす':'覚えたを飛ばす')+'</button></div>';
+    let rows=[];
+    noteLessons.slice().sort(noteSortLesson).forEach(l=>{rows=rows.concat(noteFocusRows(l.id));});
+    if(noteSweepSkip)rows=rows.filter(c=>!noteLearned[c.id]);
+    list.innerHTML=rows.length
+      ? rows.map(c=>{
+          const l=noteLessonById(c.lesson);
+          return '<div class="note-lesson-sep">'+noteEsc(c.date)+' '+noteEsc(c.teacher)+(l&&l.material?'　'+noteEsc(l.material):'')+'</div>'+
+                 noteCorrCardHTML(c,!!noteOpen[c.id]);
+        }).join('')
+      : '<div class="note-empty">振り返る重点がありません。<br>（覚えたを飛ばす設定を外すと全部出ます）</div>';
+    return;
+  }
+  // --- 1レッスンの詳細 ---
+  if(noteLesson){
+    const l=noteLessonById(noteLesson);
+    fil.innerHTML='<div class="note-frow"><button class="note-act" onclick="noteBackLessons()">← レッスン一覧へ</button></div>';
+    let h='<div class="note-card note-lesson-head">'+
+      '<div class="note-head"><span class="note-tag">'+noteEsc(l?l.date:'')+'</span>'+
+      '<span class="note-meta">'+noteEsc(l?l.teacher:'')+(l&&l.level?'<br>'+noteEsc(l.level):'')+'</span></div>'+
+      '<div class="note-title">'+noteEsc(l?l.material:'')+'</div>'+
+      (l&&l.note?'<div class="note-rule-body">'+noteEsc(l.note)+'</div>':'')+'</div>';
+    const fr=noteFocusRows(noteLesson);
+    h+= fr.length ? fr.map(c=>noteCorrCardHTML(c,!!noteOpen[c.id])).join('')
+                  : '<div class="note-empty">このレッスンに重点の登録がありません。</div>';
+    h+='<div class="note-frow" style="margin-top:4px"><button class="note-act" onclick="noteFilterByLesson(\''+noteLesson+'\')">このレッスンのほかの指摘を見る →</button></div>';
+    list.innerHTML=h;
+    return;
+  }
+  // --- レッスン一覧 ---
+  fil.innerHTML='<div class="note-frow"><button class="note-act" onclick="noteToggleSweep()">🔁 重点をまとめて振り返る</button></div>'+notePriorityHTML();
+  let rows=noteLessons.slice().sort(noteSortLesson)
+    .filter(l=>noteMatch(l,q,['id','date','teacher','material','level','note']));
+  list.innerHTML=rows.length ? rows.map(l=>{
+    const done=noteLessonDone(l.id);
+    return '<div class="note-card'+(done?' done':'')+'" onclick="noteJumpLesson(\''+l.id+'\')">'+
+      '<div class="note-head"><span class="note-tag">'+noteEsc(l.date)+'</span>'+
+      (done?'<span class="note-tag note-done-tag">✓</span>':'')+
+      '<span class="note-meta">'+noteEsc(l.teacher)+(l.level?'<br>'+noteEsc(l.level):'')+'</span></div>'+
+      '<div class="note-title">'+noteEsc(l.material)+'</div>'+
+      (l.note?'<div class="note-rule-body" style="margin-bottom:0">'+noteEsc(l.note)+'</div>':'')+
+      '</div>';
+  }).join('') : '<div class="note-empty">条件に合うレッスンがありません。</div>';
 }
 function noteRenderCorr(q){
   const fil=document.getElementById('note-filters'),list=document.getElementById('note-list');
@@ -2333,6 +2480,19 @@ function noteRenderCorr(q){
     '<button class="note-chip-btn'+(noteF.status==='new'?' active':'')+'" onclick="noteSetF(\'status\',\'new\')">未確認</button>'+
     '<button class="note-chip-btn'+(noteF.status==='done'?' active':'')+'" onclick="noteSetF(\'status\',\'done\')">覚えた</button>'+
     '</div></div>';
+  if(noteLessons.length){
+    const ls=noteLessons.slice().sort(noteSortLesson);
+    h+='<div class="note-frow"><span class="note-flabel">回</span><div class="note-chips">'+
+      '<button class="note-chip-btn'+(noteF.lesson===''?' active':'')+'" onclick="noteSetF(\'lesson\',\'\')">全部</button>'+
+      ls.map(l=>'<button class="note-chip-btn'+(noteF.lesson===l.id?' active':'')+'" onclick="noteSetF(\'lesson\',\''+l.id+'\')">'+noteEsc(l.date)+'</button>').join('')+
+      '</div></div>';
+  }
+  if(noteHasFocus()){
+    h+='<div class="note-frow"><span class="note-flabel">重点</span><div class="note-chips">'+
+      '<button class="note-chip-btn'+(noteF.focusonly===''?' active':'')+'" onclick="noteSetF(\'focusonly\',\'\')">全部</button>'+
+      '<button class="note-chip-btn'+(noteF.focusonly==='1'?' active':'')+'" onclick="noteSetF(\'focusonly\',\'1\')">重点のみ</button>'+
+      '</div></div>';
+  }
   h+='<div class="note-frow"><span class="note-flabel">期間</span>'+
     '<input class="note-date" type="date" value="'+noteEsc(noteF.from)+'" onchange="noteSetDate(\'from\',this.value)">'+
     '<span class="note-flabel">〜</span>'+
@@ -2351,6 +2511,8 @@ function noteRenderCorr(q){
     }
     if(noteF.cat&&c.category!==noteF.cat)return false;
     if(noteF.teacher&&c.teacher!==noteF.teacher)return false;
+    if(noteF.lesson&&c.lesson!==noteF.lesson)return false;
+    if(noteF.focusonly&&!String(c.focus||'').trim())return false;
     if(noteF.status==='new'&&noteLearned[c.id])return false;
     if(noteF.status==='done'&&!noteLearned[c.id])return false;
     if(noteF.from&&String(c.date||'')<noteF.from)return false;
@@ -2359,31 +2521,7 @@ function noteRenderCorr(q){
   });
   if(!rows.length){list.innerHTML='<div class="note-empty">条件に合う指摘がありません。</div>';return;}
 
-  list.innerHTML=rows.map(c=>{
-    const done=!!noteLearned[c.id];
-    const open=noteView==='list'||noteOpen[c.id];
-    let s='<div class="note-card'+(done?' done':'')+'" onclick="noteToggleOpen(\''+c.id+'\',event)">';
-    s+='<div class="note-head"><span class="note-tag">'+noteEsc(c.category)+'</span>'+
-       '<span class="note-meta">'+noteEsc(c.date)+' '+noteEsc(c.teacher)+'<br>'+noteEsc(c.source)+'</span></div>';
-    s+='<div class="note-said">❌ '+noteEsc(c.said)+'</div>';
-    if(open){
-      s+='<div class="note-fixed">✅ '+noteEsc(c.fixed)+'</div>';
-      s+='<div class="note-point">'+noteEsc(c.point)+'</div>';
-      const rl=noteRuleIds(c);
-      if(rl.length){
-        s+='<div class="note-links"><span class="note-links-label">関連ルール</span>';
-        rl.forEach(id=>{s+='<button class="note-link" onclick="noteJump(\'rule\',\''+id+'\');event.stopPropagation()">'+noteEsc(id)+' '+noteEsc(noteRuleTitle(id))+'</button>';});
-        s+='</div>';
-      }
-      s+='<div class="note-actions">'+
-         '<button class="note-act" onclick="noteSpeak(\''+noteEsc(c.fixed).replace(/'/g,"\\'")+'\',event)">🔊 読み上げ</button>'+
-         '<button class="note-act'+(done?' on':'')+'" onclick="noteToggleLearned(\''+c.id+'\',event)">'+(done?'✓ 覚えた':'覚えた')+'</button>'+
-         '</div>';
-    }else{
-      s+='<div class="note-tapline">タップして直した形を見る</div>';
-    }
-    return s+'</div>';
-  }).join('');
+  list.innerHTML=rows.map(c=>noteCorrCardHTML(c,noteView==='list'||!!noteOpen[c.id])).join('');
 }
 function noteRenderRule(q){
   const fil=document.getElementById('note-filters'),list=document.getElementById('note-list');
